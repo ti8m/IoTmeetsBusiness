@@ -13,6 +13,7 @@
     <string name="lastName">Nachname</string>
     <string name="registerSensor">Sensor registrieren</string>
 
+    <string name="msgPhoneNotConnected">Telefon ist nicht mit dem Sensor verbunden</string>
     <string name="msgEmailTaken">Für diese E-Mail besteht bereits ein Account</string>
     <string name="msgInvalidEmail">Dies ist keine gültige E-Mail Adresse</string>
     <string name="msgInvalidPassword">Dies ist kein gültiges Passwort</string>
@@ -29,6 +30,19 @@
     <string name="location">Standort</string>
     <string name="save">Speichern</string>
     <string name="addSensor">Sensor hinzufügen</string>
+    <string name="title_activity_connect_wlan">ConnectWlanActivity</string>
+    <string name="connect">Verbinden</string>
+    <string name="ssid">SSID</string>
+    <string name="instTurnSensorOn">Sensor einschalten und Konfig-Taste gedrückt halten</string>
+    <string name="instBlinkLed">Sobald die grüne LED blinkt, Konfig-Taste loslassen</string>
+    <string name="instConnectToSensor">Smartphone mit den WLAN &quot;iot-meets-busines&quot; verbinden</string>
+    <string name="instSetSsid">SSID und Passwort des Netzerks eingeben, mit welchem der Sensor verbunden werden soll</string>
+    <string name="instPressConnect">Button &quot;Verbinden&quot; drücken</string>
+    <string name="title_activity_connect_phone">ConnectPhoneActivity</string>
+    <string name="networkSettings">Netzwerk Einstellungen</string>
+    <string name="next">Weiter</string>
+    <string name="connected">Verbunden</string>
+    <string name="notConnected">Nicht Verbunden</string>
 
 
 </resources>

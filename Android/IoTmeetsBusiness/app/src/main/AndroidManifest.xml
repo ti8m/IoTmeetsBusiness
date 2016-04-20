@@ -3,8 +3,10 @@
     package="ch.ti8m.iotmeetsbusiness">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
+        android:name=".util.ApplicationController"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -56,6 +58,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ch.ti8m.iotmeetsbusiness.activities.HomeActivity" />
         </activity>
+        <activity
+            android:name=".activities.ConnectSensorActivity"
+            android:label="@string/title_activity_connect_wlan"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.ConnectPhoneActivity"
+            android:label="@string/title_activity_connect_phone"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

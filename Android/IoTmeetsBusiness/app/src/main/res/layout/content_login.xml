@@ -55,6 +55,9 @@
                 android:id="@+id/btn_login"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@color/colorPrimary"
+                android:textColor="@color/background_material_light"
                 android:onClick="login"
                 android:text="@string/login" />
 
@@ -62,6 +65,9 @@
                 android:id="@+id/btn_register"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@color/transparent"
+                android:textColor="@color/colorPrimaryDark"
                 android:onClick="register"
                 android:text="@string/register" />
 

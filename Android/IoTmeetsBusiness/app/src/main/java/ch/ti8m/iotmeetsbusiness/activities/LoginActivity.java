@@ -51,6 +51,8 @@ public class LoginActivity extends AppCompatActivity {
         // set test-user login ToDo: Remove
         edit_email.setText("test@test.ch");
         edit_password.setText("test");
+
+        firebase.unauth();
     }
 
 
@@ -80,6 +82,7 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
 
                             sessionExpired();
+
                         }
                     }
                 });
@@ -139,7 +142,7 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
         Intent intent = new Intent(this, LoginActivity.class);
         // prevent returning with back-button
-        intent.setFlags(intent.FLAG_ACTIVITY_NEW_TASK | intent.FLAG_ACTIVITY_CLEAR_TASK);
+        //intent.setFlags(intent.FLAG_ACTIVITY_NEW_TASK | intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
 

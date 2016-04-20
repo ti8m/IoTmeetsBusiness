@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Created by sa005 on 15.04.2016.
  */
-public class Sensor {
+public class DataChannel {
 
     private String id;
     private String writeKey;
@@ -13,17 +13,21 @@ public class Sensor {
     private String description;
     private String location;
     private List tags;
+    private String value1;
+    private String value2;
 
-    public Sensor() {
+    public DataChannel() {
     }
 
-    public Sensor(String id, String writeKey, String readKey, String description, String location, List tags) {
+    public DataChannel(String id, String writeKey, String readKey, String description, String location, List tags, String value1, String value2) {
         this.id = id;
         this.writeKey = writeKey;
         this.readKey = readKey;
         this.description = description;
         this.location = location;
         this.tags = tags;
+        this.value1 = value1;
+        this.value2 = value2;
     }
 
     public String getId() {
@@ -73,4 +77,21 @@ public class Sensor {
     public void setTags(List tags) {
         this.tags = tags;
     }
+
+    public String getValue1() {
+        return value1;
+    }
+
+    public void setValue1(String value1) {
+        this.value1 = value1;
+    }
+
+    public String getValue2() {
+        return value2;
+    }
+
+    public void setValue2(String value2) {
+        this.value2 = value2;
+    }
+
 }
