@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">IoTmeetsBusiness</string>
+    <string name="app_name">IoT meets Business</string>
     <string name="action_settings">Settings</string>
 
     <string name="title_activity_registration">Registrieren</string>
@@ -23,26 +23,30 @@
     <string name="msgRegistrationSuccessful">Erfolgreich registriert</string>
     <string name="msgUnequalPasswords">Die beiden Passwörter sind nicht identisch</string>
     <string name="msgSessionExpired">Sitzung abgelaufen</string>
-    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_home">Sensoren</string>
     <string name="msgErrorOccurred">Ein Fehler ist aufgetreten</string>
-    <string name="title_activity_new_sensor">NewSensorActivity</string>
+    <string name="title_activity_new_sensor">Neuer Sensor</string>
     <string name="description">Beschreibung</string>
     <string name="location">Standort</string>
     <string name="save">Speichern</string>
     <string name="addSensor">Sensor hinzufügen</string>
-    <string name="title_activity_connect_wlan">ConnectWlanActivity</string>
+    <string name="title_activity_connect_wlan">Sensor verbinden</string>
     <string name="connect">Verbinden</string>
     <string name="ssid">SSID</string>
     <string name="instTurnSensorOn">Sensor einschalten und Konfig-Taste gedrückt halten</string>
     <string name="instBlinkLed">Sobald die grüne LED blinkt, Konfig-Taste loslassen</string>
-    <string name="instConnectToSensor">Smartphone mit den WLAN &quot;iot-meets-busines&quot; verbinden</string>
+    <string name="instConnectToSensor">Smartphone mit den WLAN <b><i>iot-meets-business</i></b> verbinden</string>
     <string name="instSetSsid">SSID und Passwort des Netzerks eingeben, mit welchem der Sensor verbunden werden soll</string>
-    <string name="instPressConnect">Button &quot;Verbinden&quot; drücken</string>
-    <string name="title_activity_connect_phone">ConnectPhoneActivity</string>
+    <string name="instPressConnect">Button <i>Verbinden</i> drücken</string>
+    <string name="title_activity_connect_phone">Telefon verbinden</string>
     <string name="networkSettings">Netzwerk Einstellungen</string>
     <string name="next">Weiter</string>
-    <string name="connected">Verbunden</string>
-    <string name="notConnected">Nicht Verbunden</string>
+    <string name="connected"><b>Verbunden</b></string>
+    <string name="notConnected"><b>Nicht Verbunden</b></string>
+    <string name="instConnectPhone">Telefon mit dem Sensor verbinden:</string>
+    <string name="instConnectSensor">Sensor mit WLAN verbinden:</string>
+    <string name="msgCanNotConnect">Verbindung konnte nicht hergestellt werden</string>
+
 
 
 </resources>

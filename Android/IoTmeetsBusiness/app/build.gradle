@@ -37,4 +37,5 @@ dependencies {
     compile 'com.firebase:firebase-client-android:2.5.2+'
     compile files('libs/volley.jar')
 
+    compile 'com.google.android.gms:play-services-appindexing:8.1.0'
 }

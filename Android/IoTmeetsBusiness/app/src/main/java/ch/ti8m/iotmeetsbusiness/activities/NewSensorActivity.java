@@ -81,6 +81,7 @@ public class NewSensorActivity extends AppCompatActivity {
         // Setup POST-parameter
         Map<String, String> params = getDefaultParams();
         params.put("name", description);
+        params.put("description", location);
         // ToDo: Add more parameters
 
         // HTTP POST with volley-library
@@ -135,9 +136,10 @@ public class NewSensorActivity extends AppCompatActivity {
 
             channel.setId(response.getString("id"));
             channel.setDescription(response.getString("name"));
+            channel.setLocation(response.getString("description"));
             channel.setWriteKey(response.getJSONArray("api_keys").getJSONObject(0).getString("api_key"));
             channel.setReadKey(response.getJSONArray("api_keys").getJSONObject(1).getString("api_key"));
-            channel.setLocation(response.getString("latitude") + "/" + response.getString("longitude"));
+            channel.setPosition(response.getString("latitude") + "/" + response.getString("longitude"));
 
             // Get tags
             JSONArray jsonTags = response.getJSONArray("tags");

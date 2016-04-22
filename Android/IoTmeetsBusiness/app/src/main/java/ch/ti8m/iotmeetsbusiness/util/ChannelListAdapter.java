@@ -42,6 +42,7 @@ public class ChannelListAdapter extends ArrayAdapter<DataChannel> {
             holder = new ChannelHolder();
             holder.icon = (ImageView) row.findViewById(R.id.ic_channelIcon);
             holder.name = (TextView) row.findViewById(R.id.txt_name);
+            holder.location = (TextView) row.findViewById(R.id.txt_Location);
             holder.value1 = (TextView) row.findViewById(R.id.txt_value1);
             holder.value2 = (TextView) row.findViewById(R.id.txt_value2);
 
@@ -55,10 +56,21 @@ public class ChannelListAdapter extends ArrayAdapter<DataChannel> {
 
 
         // Set icon
-        holder.icon.setImageResource(R.mipmap.ic_launcher); // ToDo: change icon
+        holder.icon.setImageResource(R.mipmap.ic_sensor);
 
         // Set name
         holder.name.setText(channel.getDescription());
+
+        // Set location
+        String location = channel.getLocation();
+
+        if(location != null && !location.equals("")){
+            holder.location.setText(location + ", ");
+        }
+        else {
+            holder.location.setText(location + "");
+            holder.location.setPadding(0,0,0,0);
+        }
 
         // Set value 1
         holder.value1.setText(channel.getValue1());
@@ -73,6 +85,7 @@ public class ChannelListAdapter extends ArrayAdapter<DataChannel> {
     static class ChannelHolder {
         ImageView icon;
         TextView name;
+        TextView location;
         TextView value1;
         TextView value2;
 

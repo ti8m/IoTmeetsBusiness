@@ -22,10 +22,18 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/instConnectPhone"
+                android:textStyle="bold" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="5dp"
+                android:paddingTop="5dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -85,22 +93,14 @@
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/txt_connection_status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:textColor="@color/red"
-                android:layout_marginTop="40dp"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Connection Status" />
-
             <Button
                 android:id="@+id/btn_networkSettings"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
-                android:background="@color/colorPrimary"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/shape_rounded_button"
                 android:textColor="@color/background_material_light"
                 android:onClick="networkSettings"
                 android:text="@string/networkSettings" />
@@ -110,10 +110,22 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:background="@color/colorPrimary"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/shape_rounded_button"
                 android:textColor="@color/background_material_light"
                 android:onClick="next"
                 android:text="@string/next" />
+
+            <TextView
+                android:id="@+id/txt_connection_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_marginTop="40dp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Connection Status" />
 
 
         </LinearLayout>

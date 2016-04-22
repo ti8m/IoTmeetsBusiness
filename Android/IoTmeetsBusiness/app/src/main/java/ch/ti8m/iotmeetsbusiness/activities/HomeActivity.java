@@ -1,6 +1,7 @@
 package ch.ti8m.iotmeetsbusiness.activities;
 
 import android.content.Intent;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -30,6 +31,7 @@ import ch.ti8m.iotmeetsbusiness.persistency.DataChannel;
 import ch.ti8m.iotmeetsbusiness.util.ApplicationController;
 import ch.ti8m.iotmeetsbusiness.util.FirebaseHelper;
 import ch.ti8m.iotmeetsbusiness.util.MyListFragment;
+import ch.ti8m.iotmeetsbusiness.util.Spinner;
 import ch.ti8m.iotmeetsbusiness.util.ThingSpeakHelper;
 
 public class HomeActivity extends AppCompatActivity {
@@ -47,6 +49,20 @@ public class HomeActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        //  Reconnect wifi after disconnecting form sensor
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+
+        if (bundle != null) {
+            boolean reconnect = (boolean) bundle.get("RECONNECT");
+            if(reconnect){
+                reconnectWifi();
+            }
+
+        }
+
+        Spinner.show(this);
 
         // Get reference to firebase root
         firebase = FirebaseHelper.getFirebaseRef();
@@ -91,8 +107,11 @@ public class HomeActivity extends AppCompatActivity {
                     Log.d(LOG_TAG, "add channel " + channel.getId());
                 }
 
-            }
+                if(channels.isEmpty()){
+                    Spinner.hide();
+                }
 
+            }
             @Override
             public void onCancelled(FirebaseError firebaseError) {
             }
@@ -139,7 +158,10 @@ public class HomeActivity extends AppCompatActivity {
 
                             // Set channel data to the list-view
                             listFragment.setChannelsOnList(channels);
+                            Spinner.hide();
                         }
+
+
 
                     }
                 }, new Response.ErrorListener() {
@@ -161,12 +183,19 @@ public class HomeActivity extends AppCompatActivity {
 
                 VolleyLog.d(LOG_TAG, "no Data for channel " + channel.getId());
 
+                Spinner.hide();
+
             }
         });
 
         // add the request object to the queue to be executed
         ApplicationController.getInstance().addToRequestQueue(req);
 
+    }
+
+    private void reconnectWifi(){
+        WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+        wifiManager.reconnect();
     }
 
 

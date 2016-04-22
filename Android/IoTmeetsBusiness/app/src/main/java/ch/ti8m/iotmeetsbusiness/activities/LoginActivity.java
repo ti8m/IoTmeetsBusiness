@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
         edit_email.setText("test@test.ch");
         edit_password.setText("test");
 
-        firebase.unauth();
+        //firebase.unauth();
     }
 
 
@@ -74,18 +74,18 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d(LOG_TAG, "User ID: " + authData.getUid() + ", Provider: " + authData.getProvider());
 
                 // Listen for changes in the authentication state
-                firebase.addAuthStateListener(new Firebase.AuthStateListener() {
-                    @Override
-                    public void onAuthStateChanged(AuthData authData) {
-                        if (authData != null) {
-                            // user is logged in
-                        } else {
-
-                            sessionExpired();
-
-                        }
-                    }
-                });
+//                firebase.addAuthStateListener(new Firebase.AuthStateListener() {
+//                    @Override
+//                    public void onAuthStateChanged(AuthData authData) {
+//                        if (authData != null) {
+//                            // user is logged in
+//                        } else {
+//
+//                            sessionExpired();
+//
+//                        }
+//                    }
+//                });
 
                 // Go to home-activity
                 Intent intent = new Intent(LoginActivity.this, HomeActivity.class);

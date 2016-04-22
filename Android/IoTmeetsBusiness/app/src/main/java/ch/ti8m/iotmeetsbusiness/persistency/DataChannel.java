@@ -12,6 +12,7 @@ public class DataChannel {
     private String readKey;
     private String description;
     private String location;
+    private String position;
     private List tags;
     private String value1;
     private String value2;
@@ -19,12 +20,13 @@ public class DataChannel {
     public DataChannel() {
     }
 
-    public DataChannel(String id, String writeKey, String readKey, String description, String location, List tags, String value1, String value2) {
+    public DataChannel(String id, String writeKey, String readKey, String description, String location, String position, List tags, String value1, String value2) {
         this.id = id;
         this.writeKey = writeKey;
         this.readKey = readKey;
         this.description = description;
         this.location = location;
+        this.position = position;
         this.tags = tags;
         this.value1 = value1;
         this.value2 = value2;
@@ -66,9 +68,11 @@ public class DataChannel {
         return location;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
+    public String getPosition() { return position; }
+
+    public void setLocation(String location) { this.location = location; }
+
+    public void setPosition(String position) { this.position = position; }
 
     public List getTags() {
         return tags;
@@ -90,8 +94,6 @@ public class DataChannel {
         return value2;
     }
 
-    public void setValue2(String value2) {
-        this.value2 = value2;
-    }
+    public void setValue2(String value2) { this.value2 = value2; }
 
 }

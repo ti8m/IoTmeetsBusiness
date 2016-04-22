@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/app/src/main/java/ch/ti8m/iotmeetsbusiness/util/ChannelListAdapter.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/ch/ti8m/iotmeetsbusiness/util/FragmentCallback.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/ch/ti8m/iotmeetsbusiness/util/MyListFragment.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/shape_rounded_button.xml" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/layout/list_fragment.xml" charset="windows-1252" />
+    <file url="PROJECT" charset="UTF-8" />
+  </component>
+</project>

@@ -41,13 +41,12 @@ public class ConnectPhoneActivity extends AppCompatActivity {
 
         linkGuiElements();
 
-        //isPhoneConnected();
-
     }
 
     @Override
     public void onResume() {
-        super.onResume();  // Always call the superclass method first
+
+        super.onResume();
 
         isPhoneConnected();
     }
@@ -98,7 +97,7 @@ public class ConnectPhoneActivity extends AppCompatActivity {
 
             // set green message "connected"
             txt_connection_status.setText(R.string.connected);
-            txt_connection_status.setTextColor(getResources().getColor(R.color.green));
+            //txt_connection_status.setTextColor(getResources().getColor(R.color.green));
 
             return true;
 
@@ -106,7 +105,7 @@ public class ConnectPhoneActivity extends AppCompatActivity {
 
             // set red message "not connected"
             txt_connection_status.setText(R.string.notConnected);
-            txt_connection_status.setTextColor(getResources().getColor(R.color.red));
+            //txt_connection_status.setTextColor(getResources().getColor(R.color.red));
 
             return false;
         }
