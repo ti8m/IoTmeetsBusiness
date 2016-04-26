@@ -127,7 +127,7 @@ public class HomeActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "add data to channel " + channel.getId());
 
         String URL = ThingSpeakHelper.getUrl() + "/" + channel.getId() + "/feeds/last.json?api_key=" + channel.getReadKey();
-        //String URL = "https://api.thingspeak.com/channels/96640/feeds/last.json?api_key=WNWUPPX489LYWMV4";
+
         // pass second argument as "null" for GET requests
         JsonObjectRequest req = new JsonObjectRequest(URL, null,
                 new Response.Listener<JSONObject>() {

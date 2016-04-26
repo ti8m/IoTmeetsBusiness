@@ -51,7 +51,7 @@ public class ConnectSensorActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // get channel write-key form intent
+        // get channel write-key from intent
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
 

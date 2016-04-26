@@ -1,6 +1,7 @@
 package ch.ti8m.iotmeetsbusiness.util;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import ch.ti8m.iotmeetsbusiness.R;
+import ch.ti8m.iotmeetsbusiness.activities.ConnectPhoneActivity;
 import ch.ti8m.iotmeetsbusiness.persistency.DataChannel;
 
 /**
@@ -40,10 +42,10 @@ public class MyListFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-//                Intent intent = new Intent(getActivity(), BaenkliDetailViewActivity.class);
-//                String baenkliId = channels.get(position).getObjectId();
-//                intent.putExtra(getActivity().getString(R.string.intent_id_benchId), baenkliId);
-//                startActivity(intent);
+                Intent intent = new Intent(getActivity(), ConnectPhoneActivity.class);
+                String writeKey = channels.get(position).getWriteKey();
+                intent.putExtra("WRITE_KEY", writeKey);
+                startActivity(intent);
             }
         });
 

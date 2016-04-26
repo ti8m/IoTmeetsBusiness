@@ -7,15 +7,13 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.Volley;
+import com.firebase.client.Firebase;
 
 /**
  * Created by sa005 on 19.04.2016.
  */
 public class ApplicationController extends Application {
 
-    /**
-     * Log or request TAG
-     */
     public static final String TAG = "VolleyPatterns";
 
     /**
@@ -34,6 +32,9 @@ public class ApplicationController extends Application {
 
         // initialize the singleton
         sInstance = this;
+
+        // Initialize firebase
+        Firebase.setAndroidContext(this);
     }
 
     /**
