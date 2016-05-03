@@ -15,7 +15,7 @@
 
 ## SMING_HOME sets the path where Sming framework is located.
 ## Windows:
-SMING_HOME = c:/tools/sming/Sming 
+# SMING_HOME = c:/tools/sming/Sming 
 
 ## MacOS / Linux
 # SMING_HOME = /opt/sming/Sming
@@ -33,7 +33,10 @@ SMING_HOME = c:/tools/sming/Sming
 ## Configure flash parameters (for ESP12-E and other new boards):
 # SPI_MODE = dio
 
+## use rboot build mode
+RBOOT_ENABLED ?= 1
+
 ## SPIFFS options
-# DISABLE_SPIFFS = 1
-# SPIFF_FILES = web/build
+DISABLE_SPIFFS = 1
+# SPIFF_FILES = files
 

@@ -1,0 +1,58 @@
+<resources>
+    <string name="app_name">Secure IoT</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="title_activity_registration">Registrieren</string>
+
+    <string name="email">E-Mail</string>
+    <string name="password">Passwort</string>
+    <string name="repeatPassword">Passwort wiederholen</string>
+    <string name="login">Login</string>
+    <string name="register">Registrieren</string>
+    <string name="firstName">Vorname</string>
+    <string name="lastName">Nachname</string>
+    <string name="registerSensor">Sensor registrieren</string>
+
+    <string name="msgPhoneNotConnected">Telefon ist mit keinem WLAN verbunden</string>
+    <string name="msgEmailTaken">Für diese E-Mail besteht bereits ein Account</string>
+    <string name="msgInvalidEmail">Dies ist keine gültige E-Mail Adresse</string>
+    <string name="msgInvalidPassword">Dies ist kein gültiges Passwort</string>
+    <string name="msgRegistrationFailed">Registrierung fehlgeschlagen</string>
+    <string name="msgLoginFailed">Anmeldung fehlgeschlagen</string>
+    <string name="msgInvalidCredentials">E-Mail oder Passwort nicht korrekt</string>
+    <string name="msgRegistrationSuccessful">Erfolgreich registriert</string>
+    <string name="msgUnequalPasswords">Die beiden Passwörter sind nicht identisch</string>
+    <string name="msgSessionExpired">Sitzung abgelaufen</string>
+    <string name="msgUnknownDevice">Gerät nicht bekannt</string>
+    <string name="title_activity_home">Sensoren</string>
+    <string name="msgErrorOccurred">Ein Fehler ist aufgetreten</string>
+    <string name="msgSensorNotFound">Sensor nicht gefunden</string>
+    <string name="msgConnecting">Verbinden...</string>
+    <string name="msgPleaseWait">Bitte warten</string>
+    <string name="title_activity_new_sensor">Neuer Sensor</string>
+    <string name="description">Beschreibung</string>
+    <string name="location">Standort</string>
+    <string name="save">Speichern</string>
+    <string name="addSensor">Sensor hinzufügen</string>
+    <string name="title_activity_connect_wlan">Sensor verbinden</string>
+    <string name="connect">Verbinden</string>
+    <string name="ssid">SSID</string>
+    <string name="instTurnSensorOn">Sensor einschalten und Konfig-Taste gedrückt halten</string>
+    <string name="instBlinkLed">Sobald die grüne LED blinkt, Konfig-Taste loslassen</string>
+    <string name="instConnectToSensor">Smartphone mit den WLAN <b><i>iot-meets-business</i></b> verbinden</string>
+    <string name="instSetPassword">Passwort des Netzwerks eingeben, mit welchem das IoT-Gerät verbunden werden soll</string>
+    <string name="instMustBeConnected">Das Telefon muss bereits mit diesem Netzwerk verbunden sein</string>
+    <string name="instPressConnect">Button <i>Verbinden</i> drücken</string>
+    <string name="title_activity_connect_phone">Telefon verbinden</string>
+    <string name="networkSettings">Netzwerk Einstellungen</string>
+    <string name="next">Weiter</string>
+    <string name="connected"><b>Verbunden</b></string>
+    <string name="notConnected">Nicht verbunden</string>
+    <string name="instConnectPhone">Telefon mit dem Sensor verbinden:</string>
+    <string name="instConnectDevice">IoT-Gerät mit WLAN verbinden:</string>
+    <string name="msgCanNotConnect">Verbindung konnte nicht hergestellt werden</string>
+    <string name="title_activity_connect_sensor2">ConnectSensor2Activity</string>
+    <string name="title_activity_main">Secure IoT</string>
+
+
+</resources>
