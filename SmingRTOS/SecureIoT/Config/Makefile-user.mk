@@ -22,7 +22,7 @@
 
 ## COM port parameter is reqruied to flash firmware correctly.
 ## Windows: 
-# COM_PORT = COM3
+ COM_PORT = COM4
 
 ## MacOS / Linux:
 # COM_PORT = /dev/tty.usbserial
@@ -34,7 +34,7 @@
 # SPI_MODE = dio
 
 ## use rboot build mode
-RBOOT_ENABLED ?= 1
+#RBOOT_ENABLED ?= 1
 
 ## SPIFFS options
 DISABLE_SPIFFS = 1

@@ -1,0 +1,15 @@
+{
+  "name": "secure-iot",
+  "version": "0.0.0",
+  "description": "Thesis",
+  "main": "server.js",
+  "author": "S. Schärer",
+  "dependencies": {
+    "async": "~0.2.8",
+    "body-parser": "^1.15.1",
+    "express": "^4.13.4",
+    "jsonwebtoken": "^7.0.0",
+    "mongoose": "^4.4.19",
+    "morgan": "^1.7.0"
+  }
+}

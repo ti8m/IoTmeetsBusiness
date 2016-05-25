@@ -5193,6 +5193,7 @@ LOAD C:\Espressif\ESP8266_RTOS_SDK/lib\libminic.a
 LOAD C:\Espressif\ESP8266_RTOS_SDK/lib\libpwm.a
 LOAD C:\Espressif\ESP8266_RTOS_SDK/lib\libsmartconfig.a
 LOAD c:/tools/SmingRTOS/sming/compiler/lib/\libsming.a
+LOAD c:/tools/SmingRTOS/sming/compiler/lib/\libsecurity.a
 END GROUP
                 0x40000000                PROVIDE (_memmap_vecbase_reset, 0x40000000)
                 0x00000110                _memmap_cacheattr_wb_base = 0x110

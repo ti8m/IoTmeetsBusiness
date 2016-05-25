@@ -1,0 +1,25 @@
+Start mongodb:
+---------------
+
+./mongod
+
+
+Use mongo shell:
+-----------------
+
+Window >> New Terminal
+
+>> mongo
+
+>> show dbs               // list all db's
+
+>> use secureIoT          // switch to db secureIoT
+
+>> db.devices.find()      // list all devices
+
+>> db.devices.remove({})  // remove all devices
+
+>> db.dropDatabase()      // delete the db
+
+
+>> https://docs.mongodb.com/getting-started/shell
