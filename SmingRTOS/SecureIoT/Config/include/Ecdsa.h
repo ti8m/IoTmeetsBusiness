@@ -8,7 +8,8 @@
 #ifndef INCLUDE_ECDSA_H_
 #define INCLUDE_ECDSA_H_
 
-void startEccPrepareTask();
+void startAuth();
+void authStartRequest();
 void authKeyRequest();
 void authKeyResponse(HttpClient& client, bool successful);
 void authChallengeRequest(String challenge);

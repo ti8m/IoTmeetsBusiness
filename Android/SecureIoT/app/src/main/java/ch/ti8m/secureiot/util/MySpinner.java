@@ -8,7 +8,7 @@ import ch.ti8m.secureiot.R;
 /**
  * Created by sa005 on 13.04.2016.
  */
-public class Spinner {
+public class MySpinner {
 
     private static ProgressDialog spinnerDialog;
 

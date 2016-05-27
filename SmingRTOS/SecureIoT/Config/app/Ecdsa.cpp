@@ -13,9 +13,11 @@
 
 #include <Ecdsa.h>
 #include <RootKeys.h>
+#include <Mqtt.h>
 
-HttpClient http;
-HttpClient http2;
+HttpClient keyReq;
+HttpClient startReq;
+HttpClient challengeReq;
 
 // Device key-pair
 uint8_t devicePrivate[24]; // curve-size
@@ -99,7 +101,7 @@ void ecc_prepare_task(void *pvParameters) {
 	vTaskDelete(NULL);
 }
 
-void startEccPrepareTask(){
+void startAuth(){
 
 	uECC_set_rng(&OS_RNG);
 	xTaskCreate(ecc_prepare_task, (const signed char* ) "ecc_prepare_task", 512, NULL, 2, NULL);
@@ -111,6 +113,8 @@ void authChallengeResponse(HttpClient& client, bool successful) {
 	int statusCode = client.getResponseCode();
 
 	if (successful) {
+
+		mqttPublish("AUTH_SUCCESS");
 
 		Serial.println("Server response: " + statusCode);
 
@@ -172,10 +176,10 @@ void authChallengeRequest(String challenge) {
 
 	Serial.println(body);
 
-	http2.setPostBody(body);
+	challengeReq.setPostBody(body);
 
-	http2.setRequestContentType("application/json");
-	http2.downloadString("http://secure-iot-samschaerer.c9users.io/auth/challenge", authChallengeResponse);
+	challengeReq.setRequestContentType("application/json");
+	challengeReq.downloadString("http://secure-iot-samschaerer.c9users.io/auth/challenge", authChallengeResponse);
 }
 
 
@@ -245,8 +249,51 @@ void authKeyRequest() {
 	Serial.println(body);
 
 	// set request-body
-	http.setPostBody(body);
+	keyReq.setPostBody(body);
 
-	http.setRequestContentType("application/json");
-	http.downloadString("http://secure-iot-samschaerer.c9users.io/auth/key", authKeyResponse);
+	keyReq.setRequestContentType("application/json");
+	keyReq.downloadString("http://secure-iot-samschaerer.c9users.io/auth/key", authKeyResponse);
+}
+
+
+void authStartResponse(HttpClient& client, bool successful) {
+
+	int statusCode = client.getResponseCode();
+
+		if (successful) {
+
+			Serial.println("Server response: " + statusCode);
+
+			String json = client.getResponseString();
+
+			DynamicJsonBuffer jsonBuffer;
+			JsonObject& root = jsonBuffer.parseObject(json);
+
+			bool success = root["success"];
+			String message = root["message"];
+
+			Serial.println("Server response:");
+			Serial.println("message: " + message);
+
+		} else {
+
+			Serial.println("Auth-Start-Request failed");
+		}
+
+}
+
+void authStartRequest() {
+
+	String mac = WifiStation.getMAC();
+
+	// Create request-body
+	String body = "{ ";
+	body.concat("\"deviceId\":");
+	body.concat("\"" + mac + "\"}");
+
+	// set request-body
+	startReq.setPostBody(body);
+
+	startReq.setRequestContentType("application/json");
+	startReq.downloadString("http://secure-iot-samschaerer.c9users.io/auth/start", authStartResponse);
 }

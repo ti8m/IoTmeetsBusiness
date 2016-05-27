@@ -24,6 +24,7 @@
     <string name="msgUnequalPasswords">Die beiden Passwörter sind nicht identisch</string>
     <string name="msgSessionExpired">Sitzung abgelaufen</string>
     <string name="msgUnknownDevice">Gerät nicht bekannt</string>
+    <string name="msgSetPassword">WLAN-Passwort eingeben</string>
     <string name="title_activity_home">Sensoren</string>
     <string name="msgErrorOccurred">Ein Fehler ist aufgetreten</string>
     <string name="msgSensorNotFound">Sensor nicht gefunden</string>
@@ -49,10 +50,13 @@
     <string name="connected"><b>Verbunden</b></string>
     <string name="notConnected">Nicht verbunden</string>
     <string name="instConnectPhone">Telefon mit dem Sensor verbinden:</string>
-    <string name="instConnectDevice">IoT-Gerät mit WLAN verbinden:</string>
+    <string name="instConnectDevice">IoT-Gerät mit WLAN verbinden</string>
     <string name="msgCanNotConnect">Verbindung konnte nicht hergestellt werden</string>
     <string name="title_activity_connect_sensor2">ConnectSensor2Activity</string>
     <string name="title_activity_main">Secure IoT</string>
+    <string name="title_activity_validation">Verifizieren</string>
+    <string name="title_activity_register">Registrieren</string>
+    <string name="title_activity_connection">Verbinden</string>
 
 
 </resources>
