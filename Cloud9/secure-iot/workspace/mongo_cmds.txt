@@ -22,4 +22,8 @@ Window >> New Terminal
 >> db.dropDatabase()      // delete the db
 
 
+
+>> db.devices.find({"deviceId" : "18fe34a37794"}, {data: 1, _id: 0}).pretty()  // show data array from specific devices
+
+
 >> https://docs.mongodb.com/getting-started/shell

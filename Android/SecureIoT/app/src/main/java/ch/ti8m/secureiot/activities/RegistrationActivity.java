@@ -228,6 +228,34 @@ public class RegistrationActivity extends AppCompatActivity {
 
 
     /**
+     * Click-handler for cancel-button
+     */
+    public void cancel(View view) {
+
+        // disconnect mqtt-client and go to main-activity
+        try {
+            IMqttToken disconToken = mqttClient.disconnect();
+            disconToken.setActionCallback(new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+
+                    // Go to main-activity
+                    Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
+                    startActivity(intent);
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken,
+                                      Throwable exception) {
+                    // something went wrong, but probably we are disconnected anyway
+                }
+            });
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Linking all gui-elements
      */
     private void linkGuiElements() {

@@ -4,6 +4,7 @@
 
 #include <user_config.h>
 #include <SmingCore.h>
+#include "rboot/rboot.h"
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -25,6 +26,7 @@ bool configMode;
 
 Timer debounceTimer;
 bool debounceActive = false;
+bool smartConfigActive;
 
 Timer disconnectTimer;
 
@@ -47,6 +49,16 @@ void onMessageReceived(String topic, String message) {
 		authStartRequest();
 	}
 
+	if (message.equals("AUTH_REJECT")) {
+
+
+		}
+
+	if (message.equals("AUTH_END")) {
+
+		setConfigMode(false);
+	}
+
 	// Messages from server
 	if (message.equals("START_AUTH")) {
 
@@ -60,7 +72,7 @@ void onMessageReceived(String topic, String message) {
 void connectOk() {
 
 	// Waiting for smart-config state LINK_OVER
-	if (configMode)
+	if (smartConfigActive)
 		return;
 
 	debugf("I'm CONNECTED");
@@ -72,7 +84,7 @@ void connectOk() {
 
 	mqttPublish("CONNECTED");
 
-	digitalWrite(GREEN_LED_PIN, true);
+	blinkGreenStart(500, -1);
 
 }
 
@@ -85,7 +97,6 @@ void connectFail() {
 
 	blinkStop();
 	digitalWrite(RED_LED_PIN, true);
-	//WifiStation.disconnect();
 
 	if (configMode) {
 
@@ -146,7 +157,9 @@ smartconfig_callback(sc_status status, void *pdata) {
 			printf("Phone ip: %d.%d.%d.%d\n", phone_ip[0], phone_ip[1], phone_ip[2], phone_ip[3]);
 		}
 
-		setConfigMode(false);
+		//setConfigMode(false);
+		smartConfigActive = false;
+		WifiStation.waitConnection(connectOk, 10, connectFail);
 		break;
 	}
 
@@ -170,18 +183,20 @@ void setConfigMode(bool on) {
 
 		// start smart-config
 		xTaskCreate(smartconfig_task, (const signed char* ) "smartconfig_task", 256, NULL, 2, NULL);
+		smartConfigActive = true;
 
 	} else {
 
 		configMode = false;
 		blinkStop();
 		smartconfig_stop();
+		smartConfigActive = false;
 		WifiStation.waitConnection(connectOk, 10, connectFail);
 
 		// Reboot in operation mode
-//		rboot_set_current_rom(0);
-//		Serial.println("Restarting...");
-//		System.restart();
+		rboot_set_current_rom(0);
+		Serial.println("Restarting...");
+		System.restart();
 	}
 }
 
@@ -220,6 +235,8 @@ void debounceReset() {
 	debounceActive = false;
 }
 
+
+
 // for test
 void serialCallBack(Stream& stream, char arrivedChar, unsigned short availableCharsCount) {
 
@@ -234,15 +251,10 @@ void serialCallBack(Stream& stream, char arrivedChar, unsigned short availableCh
 
 }
 
-void test() {
 
-	//xTaskCreate(ecc_prepare_task, (const signed char* ) "ecc_prepare_task", 512, NULL, 2, NULL);
-	startAuth();
-
-}
 
 // for testing
-void init() {
+void init2() {
 
 	Serial.begin(SERIAL_BAUD_RATE); // 115200 by default
 	Serial.systemDebugOutput(true); // Allow debug output to serial
@@ -257,23 +269,24 @@ void init() {
 	WifiStation.waitConnection(connectOk, 10, connectFail);
 }
 
-void init2() {
+void init() {
 
 	Serial.begin(SERIAL_BAUD_RATE); // 115200 by default
 	Serial.systemDebugOutput(true); // Debug output to serial
 	//commandHandler.registerSystemCommands();
 
 	// Enable rboot in makefile!
-//	int slot = rboot_get_current_rom();
-//	Serial.printf("\r\nCurrently running rom %d.\r\n", slot);
-//
-//	if (!digitalRead(SWITCH_PIN)) {
-//
-//			// Reboot in operation-mode
-//			rboot_set_current_rom(0);
-//			Serial.println("Restarting...");
-//			System.restart();
-//		}
+	int slot = rboot_get_current_rom();
+	Serial.printf("\r\nCurrently running rom %d.\r\n", slot);
+
+
+	if (!digitalRead(SWITCH_PIN)) {
+
+			// Reboot in operation-mode
+			rboot_set_current_rom(0);
+			Serial.println("Restarting...");
+			System.restart();
+		}
 
 	pinMode(GREEN_LED_PIN, OUTPUT);
 	pinMode(RED_LED_PIN, OUTPUT);
@@ -284,9 +297,8 @@ void init2() {
 
 	WifiAccessPoint.enable(false);
 
-//	messageTimer.initializeMs(2000, publishMessage);
-
 	configMode = false;
+	smartConfigActive = false;
 
 	debounceTimer.initializeMs(1200, debounceReset);
 	configTimer.initializeMs(1000, switchDelay);

@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -184,12 +185,8 @@ public class ValidationActivity extends AppCompatActivity {
 
             case  "AUTH_SUCCESS":{
 
-                String successMsg = "Das Gerät wurde erfolgreich registriert";
-                //Toast.makeText(getApplicationContext(), successMsg, Toast.LENGTH_LONG).show();
-
-                spinnerDialog.setMessage(successMsg);
-                spinnerDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
-                spinnerDialog.getButton(DialogInterface.BUTTON_POSITIVE).setText("Fertig");
+                spinnerDialog.cancel();
+                showSuccessDialog();
 
                 break;
             }
@@ -267,23 +264,60 @@ public class ValidationActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Create Progress-Dialog for registration
+     */
     private void createSpinnerDialog(){
 
         spinnerDialog = new ProgressDialog(this);
-        //spinnerDialog.setTitle("Registrierung");
         spinnerDialog.setMessage("Gerät wird registriert...");
         spinnerDialog.setCanceledOnTouchOutside(false);
-        spinnerDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
 
-            }
-        });
+//        String buttonMessage = getResources().getString(R.string.msgPleaseWait);
+//        spinnerDialog.setButton(DialogInterface.BUTTON_POSITIVE, buttonMessage, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//
+//                // disconnect mqtt-client and go to main-activity
+//                try {
+//                    IMqttToken disconToken = mqttClient.disconnect();
+//                    disconToken.setActionCallback(new IMqttActionListener() {
+//                        @Override
+//                        public void onSuccess(IMqttToken asyncActionToken) {
+//
+//                            // Go to main-activity
+//                            Intent intent = new Intent(ValidationActivity.this, MainActivity.class);
+//                            startActivity(intent);
+//                        }
+//
+//                        @Override
+//                        public void onFailure(IMqttToken asyncActionToken,
+//                                              Throwable exception) {
+//                            // something went wrong, but probably we are disconnected anyway
+//                        }
+//                    });
+//                } catch (MqttException e) {
+//                    e.printStackTrace();
+//                }
+//
+//            }
+//        });
+    }
 
-        String buttonMessage = getResources().getString(R.string.msgPleaseWait);
-        spinnerDialog.setButton(DialogInterface.BUTTON_POSITIVE, buttonMessage, new DialogInterface.OnClickListener() {
-            @Override
+
+    /**
+     * Show dialog with success-message
+     */
+    private void showSuccessDialog(){
+
+        String successMsg = "Das Gerät wurde erfolgreich registriert";
+        AlertDialog dialog = new AlertDialog.Builder(ValidationActivity.this).create();
+        dialog.setMessage(successMsg);
+        dialog.setCancelable(false);
+        dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Fertig", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
+
+                publishCommand("AUTH_END");
 
                 // disconnect mqtt-client and go to main-activity
                 try {
@@ -309,8 +343,15 @@ public class ValidationActivity extends AppCompatActivity {
 
             }
         });
+
+        dialog.show();
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimary));
     }
 
+
+    /**
+     * Start the validation countdown
+     */
     private void startCountdown(int Seconds, final TextView tv){
 
         countDownTimer = new CountDownTimer(Seconds* 1000 + 1000, 1000) {
@@ -330,6 +371,9 @@ public class ValidationActivity extends AppCompatActivity {
         }.start();
     }
 
+    /**
+     * Cancel the validation countdown
+     */
     private void clearCountdown(){
         countDownTimer.cancel();
         txt_countdown.setText("");

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -150,14 +151,13 @@ public class ConnectionActivity extends AppCompatActivity {
     }
 
     /**
-     * Click-handler for register-button
+     * Click-handler for cancel-button
      */
-    public void register(View view) {
+    public void cancel(View view) {
 
-//        MySpinner.show(this);
-//        publishMessage("AUTH_REQUEST");
-
-
+        // Go to main-activity
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
 
@@ -434,16 +434,16 @@ public class ConnectionActivity extends AppCompatActivity {
                 }
             });
 
-            String buttonMessage = getResources().getString(R.string.msgPleaseWait);
-            mProgressDialog.setButton(DialogInterface.BUTTON_POSITIVE, buttonMessage, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                }
-            });
+//            String buttonMessage = getResources().getString(R.string.msgPleaseWait);
+//            mProgressDialog.setButton(DialogInterface.BUTTON_POSITIVE, buttonMessage, new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//
+//                }
+//            });
 
             mProgressDialog.show();
-            mProgressDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
+//            mProgressDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
         }
 
         @Override
@@ -470,8 +470,8 @@ public class ConnectionActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<IEsptouchResult> result) {
 
-            mProgressDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
-            mProgressDialog.getButton(DialogInterface.BUTTON_POSITIVE).setText("Ok");
+//            mProgressDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
+//            mProgressDialog.getButton(DialogInterface.BUTTON_POSITIVE).setText("Ok");
 
             IEsptouchResult firstResult = result.get(0);
             // check whether the task is cancelled and no results received
@@ -498,13 +498,34 @@ public class ConnectionActivity extends AppCompatActivity {
                                 + " more result(s) without showing\n");
                     }
 
-                    mProgressDialog.setMessage(sb.toString());
+                    //mProgressDialog.setMessage(sb.toString());
 
                 } else {
-                    mProgressDialog.setMessage(getResources().getString(R.string.msgCanNotConnect));
+                    ///mProgressDialog.setMessage(getResources().getString(R.string.msgCanNotConnect));
+                    mProgressDialog.cancel();
+                    showErrorDialog();
                 }
             }
         }
+    }
+
+    /**
+     * Show dialog with error-message
+     */
+    private void showErrorDialog(){
+
+        AlertDialog dialog = new AlertDialog.Builder(ConnectionActivity.this).create();
+        dialog.setMessage(getResources().getString(R.string.msgCanNotConnect));
+        //dialog.setCancelable(false);
+
+        dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        dialog.show();
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimary));
     }
 
 

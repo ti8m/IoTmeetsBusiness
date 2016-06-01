@@ -95,14 +95,17 @@
                 android:onClick="connect"
                 android:text="@string/connect" />
 
-            <Button
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/shape_rounded_button"
-                android:textColor="@color/background_material_light"
-                android:onClick="test"
-                android:text="Test" />
+            <!--<Button-->
+                <!--android:id="@+id/btn_cancel"-->
+                <!--android:layout_width="fill_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="20dp"-->
+                <!--android:layout_marginLeft="10dp"-->
+                <!--android:layout_marginRight="10dp"-->
+                <!--android:background="@color/transparent"-->
+                <!--android:textColor="@color/colorPrimaryDark"-->
+                <!--android:onClick="cancel"-->
+                <!--android:text="Abbrechen" />-->
 
         </LinearLayout>
 

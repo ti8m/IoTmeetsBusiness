@@ -35,6 +35,15 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * Click-handler for exit-button
+     */
+    public void exit(View view) {
+
+        // exit app
+        System.exit(0);
+    }
+
 
     /**
      * Linking all gui-elements

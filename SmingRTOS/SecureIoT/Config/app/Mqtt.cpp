@@ -77,7 +77,7 @@ void startMqttClient() {
 	mqtt.subscribe("secureIoT/mobile/" + deviceId);
 	mqtt.subscribe("secureIoT/server/" + deviceId);
 
-	mqtt.commandProcessing(true,"secureIoT/mobile/" + deviceId,"cmdreply");
+	//mqtt.commandProcessing(true,"secureIoT/mobile/" + deviceId,"cmdreply");
 
 }
 

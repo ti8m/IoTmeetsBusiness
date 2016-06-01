@@ -34,7 +34,7 @@
 # SPI_MODE = dio
 
 ## use rboot build mode
-#RBOOT_ENABLED ?= 1
+RBOOT_ENABLED ?= 1
 
 ## SPIFFS options
 DISABLE_SPIFFS = 1

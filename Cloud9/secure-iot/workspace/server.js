@@ -5,15 +5,13 @@ var express     = require('express');
 var bodyParser  = require('body-parser');
 var mongoose    = require('mongoose');
 var config      = require('./config'); 
-var crypto      = require('crypto');
-var ecdh        = require('./node_modules/ecdh/index');
-var mqtt        = require('mqtt');
-    
-var port = process.env.PORT || 8080; 
+
 var app  = express();
 
 app.set('token-secret', config.tokenSecret);
 app.set('root-public-key', config.rootPublicKey);
+app.set('mqtt-broker', config.mqttBroker);
+app.set('mqtt-options', config.mqttOptions);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());

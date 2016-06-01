@@ -2,10 +2,16 @@
 var express = require('express');
 var Device  = require('../models/device');
 
+var id;
+
 module.exports = function(app) {
     
     app.get('/', function(req, res) {
     res.send('Secure IoT');
+});
+
+ app.get('/id', function(req, res) {
+    res.send(id);
 });
 
 app.get('/setup', function(req, res) {
@@ -27,10 +33,11 @@ app.get('/setup', function(req, res) {
 // this route need a token now!
 app.post('/', function(req, res) {
   
-  
   console.log(req.body.deviceId);
   console.log(req.body.publicKey);
   console.log(req.body.signature);
+  
+  id = req.body.deviceId;
   
   res.json({ message: 'Secure IoT  url' });
 });

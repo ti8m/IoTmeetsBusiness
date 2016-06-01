@@ -14,6 +14,7 @@
 #include <Ecdsa.h>
 #include <RootKeys.h>
 #include <Mqtt.h>
+#include <LED.h>
 
 HttpClient keyReq;
 HttpClient startReq;
@@ -101,7 +102,23 @@ void ecc_prepare_task(void *pvParameters) {
 	vTaskDelete(NULL);
 }
 
+
+void saveAuthToken(String token){
+
+	rboot_config bootconf;
+	bootconf = rboot_get_config();
+
+	char tokenArr[165] = { 0 };
+	token.toCharArray(tokenArr, 165, 0);
+	memcpy(&bootconf.token, tokenArr, sizeof(bootconf.token));
+
+	rboot_set_config(&bootconf);
+
+}
+
 void startAuth(){
+
+	blinkGreenStart(100, -1);
 
 	uECC_set_rng(&OS_RNG);
 	xTaskCreate(ecc_prepare_task, (const signed char* ) "ecc_prepare_task", 512, NULL, 2, NULL);
@@ -131,6 +148,11 @@ void authChallengeResponse(HttpClient& client, bool successful) {
 		Serial.println("success: " + success);
 		Serial.println("message: " + message);
 		Serial.println("token: " + token);
+
+		saveAuthToken(token);
+
+		blinkStop();
+		digitalWrite(GREEN_LED_PIN, true);
 
 	} else {
 
@@ -297,3 +319,4 @@ void authStartRequest() {
 	startReq.setRequestContentType("application/json");
 	startReq.downloadString("http://secure-iot-samschaerer.c9users.io/auth/start", authStartResponse);
 }
+

@@ -15,6 +15,7 @@ var algorithm = 'sha1';
 
 var challenge;
 var devicePublicKey;
+var timeOut;
 
 module.exports = function(app) {
     
@@ -22,13 +23,82 @@ module.exports = function(app) {
 // get an instance of the router for auth routes
 var authRoutes = express.Router();
 
-authRoutes.get('/', function(req, res) {
-  res.json({ message: 'Secure IoT auth url' });
+// ==================================
+// Auth-Start Route =================
+// ==================================
+authRoutes.post('/start', function(req, res) {
+  
+  console.log("POST on auth/start")
+  
+  // Get request data
+  var deviceId = req.body.deviceId; // String
+  
+  // Setup mqtt-connection
+  var id = 'mqttjs_' + Math.random().toString(16).substr(2, 8);
+  var broker = app.get('mqtt-broker');
+  var options = app.get('mqtt-options');
+  options.clientId = id;
+  
+  // Connect to mqtt-broker
+  var client = mqtt.connect(broker, options);
+  
+  client.on('connect', function () {
+    console.log("MQTT connected");
+    
+    // Subscribe to auth-messages from moblie-app
+    client.subscribe('secureIoT/mobile/'+ deviceId);
+    
+    // Publish validation-message to mobile-app
+    client.publish('secureIoT/server/' + deviceId, 'AUTH_VALIDATE');
+    
+    // Disconnect mqtt-client after 22s timeout (validation time on mobile-app is 20s)
+    // timeOut = setTimeout(function() {
+    //   console.log("timeout");
+    //   client.end();
+       
+    // }, 22000);
+
+
+});
+
+client.on('message', function (topic, message) {
+    
+    var msg = message.toString();
+    console.log("mqtt-message received: " + msg);
+    
+    if(msg === "AUTH_CONFIRM"){
+      
+      // clearTimeout(timeOut);
+      
+      // Publish message to device
+      client.publish('secureIoT/server/' + deviceId, 'START_AUTH');
+    
+      client.end();
+    
+    }
+    
+    if(msg === "AUTH_REJECT"){
+      
+      // clearTimeout(timeOut);
+    
+      client.end();
+    
+    }
+    
+    
+    
+});
+
+res.json({ success: true, message: 'Authentication started' });
+
+
+  
+  
 });
 
 
 // ==================================
-// Auth-Key Route ===================
+// Auth Key-Route ===================
 // ==================================
 authRoutes.post('/key', function(req, res) {
   
@@ -87,7 +157,7 @@ authRoutes.post('/key', function(req, res) {
 
 
 // ==================================
-// Auth-Challenge Route =============
+// Auth Challenge-Route =============
 // ==================================
 authRoutes.post('/challenge', function(req, res) {
   
@@ -119,7 +189,11 @@ authRoutes.post('/challenge', function(req, res) {
     
         // create token
         var token = jwt.sign({c: challenge}, app.get('token-secret'), {
-          expiresIn: "24h"  // or  "2 days" 
+          
+          // expiresIn: 30 // 10s
+          // expiresIn: "24h"   
+          expiresIn: "30 days"
+          
         });
 
         // response including token
@@ -128,6 +202,8 @@ authRoutes.post('/challenge', function(req, res) {
           message: 'use this token for service requests',
           token: token
         });
+        
+        console.log("Token: " + token);
         
         // check if device already exist
         Device.findOne({deviceId: deviceId}, function(err, device) {
