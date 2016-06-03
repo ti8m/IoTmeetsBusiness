@@ -9,6 +9,7 @@ var config      = require('./config');
 var app  = express();
 
 app.set('token-secret', config.tokenSecret);
+app.set('root-private-key', config.rootPrivateKey);
 app.set('root-public-key', config.rootPublicKey);
 app.set('mqtt-broker', config.mqttBroker);
 app.set('mqtt-options', config.mqttOptions);
@@ -16,8 +17,6 @@ app.set('mqtt-options', config.mqttOptions);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-require('./router/test')(app);
-require('./router/api')(app);
 require('./router/auth')(app);
 require('./router/service')(app);
 
@@ -28,6 +27,6 @@ mongoose.connect(config.database);
     var addr = server.address();
     console.log("server listening at", addr.address + ":" + addr.port);
 
-})
+});
 
 

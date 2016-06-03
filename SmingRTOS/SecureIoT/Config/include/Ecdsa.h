@@ -10,6 +10,7 @@
 
 void startAuth();
 void authStartRequest();
+void authSigningRequest();
 void authKeyRequest();
 void authKeyResponse(HttpClient& client, bool successful);
 void authChallengeRequest(String challenge);

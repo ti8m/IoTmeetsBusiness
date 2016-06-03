@@ -20,20 +20,21 @@ module.exports = function(app) {
     // decode token
     if (token) {
 
-      // verifies secret and checks exp
+      // verify secret and check exp
       jwt.verify(token, app.get('token-secret'), function(err, decoded) {
         if (err) {
+          
           return res.status(403).send({
             success: false,
             message: 'Invalid token'
           });
           
+        } else {
+            // save to request for use in other routes
+            req.decoded = decoded;
+            next();
         }
-        else {
-          // if everything is good, save to request for use in other routes
-          req.decoded = decoded;
-          next();
-        }
+        
       });
 
     }
@@ -50,9 +51,8 @@ module.exports = function(app) {
 
 
   // ==========================================
-  // Service Auth-Route (need a token) ========
+  // Service Data-Route (need a token) ========
   // ==========================================
-
   serviceRoutes.post('/data', function(req, res) {
     
     // var deviceId = "1234";
@@ -90,12 +90,12 @@ module.exports = function(app) {
             });
             
           } else {
-            console.log("Device not found");
+              console.log("Device not found");
             
-            return res.status(404).send({
-            success: false,
-            message: 'Device not found'
-            });
+              return res.status(404).send({
+              success: false,
+              message: 'Device not found'
+              });
             
           }
           

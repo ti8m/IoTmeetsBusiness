@@ -81,35 +81,7 @@ void startMqttClient() {
 
 }
 
-///**
-// *  Callback for messages, arrived from MQTT broker
-// */
-//void onMessageReceived(String topic, String message) {
-//
-//	Serial.println("Message received: " + message);
-//
-//	if (message.equals("DONE")) {
-//
-////		digitalWrite(GREEN_LED_PIN, false);
-//
-//		// Reboot in operation mode
-////		rboot_set_current_rom(1);
-////		Serial.println("Restarting...");
-////		System.restart();
-//	}
-//
-//	// Messages from mobile-app
-//	if (message.equals("AUTH_REQUEST")) {
-//
-//		authStartRequest();
-//	}
-//
-//	// Messages from server
-//	if (message.equals("START_AUTH")) {
-//
-//		startAuth();
-//	}
-//}
+
 
 void mqttPublish(String message){
 

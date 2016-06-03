@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -14,8 +13,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +35,7 @@ import ch.ti8m.secureiot.IEsptouchResult;
 import ch.ti8m.secureiot.IEsptouchTask;
 import ch.ti8m.secureiot.R;
 import ch.ti8m.secureiot.task.__IEsptouchTask;
+import ch.ti8m.secureiot.util.Dialogs;
 import ch.ti8m.secureiot.util.MySpinner;
 import ch.ti8m.secureiot.util.WifiHelper;
 
@@ -49,12 +47,11 @@ public class ConnectionActivity extends AppCompatActivity {
     // GUI elements
     private TextView txt_ssid;
     private EditText edit_wlan_password;
-    private Switch switch_ssidHidden;
 
     private WifiHelper wifiHelper;
-    private Spinner mSpinnerTaskCount;
 
     private IEsptouchTask mEsptouchTask;
+    private ProgressDialog progressDialog;
 
     private MqttAndroidClient mqttClient;
 
@@ -77,12 +74,21 @@ public class ConnectionActivity extends AppCompatActivity {
         linkGuiElements();
 
         txt_ssid.setFocusable(false);
-        //btn_register.setEnabled(false);
-
-        //initSpinner();
-
         initMqtt();
 
+        edit_wlan_password.setText("0987qWerty");
+        progressDialog = Dialogs.getProgressDialog("Verbindung wird hergestellt...", ConnectionActivity.this);
+
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (mEsptouchTask != null) {
+            mEsptouchTask.interrupt();
+        }
     }
 
     @Override
@@ -109,7 +115,6 @@ public class ConnectionActivity extends AppCompatActivity {
         savedInstanceState.putString(STATE_MAC, deviceMac);
         super.onSaveInstanceState(savedInstanceState);
     }
-
 
 
     /**
@@ -192,9 +197,6 @@ public class ConnectionActivity extends AppCompatActivity {
 
         txt_ssid = (TextView) findViewById(R.id.txt_ssid);
         edit_wlan_password = (EditText) findViewById(R.id.edit_wlan_password);
-        //switch_ssidHidden = (Switch) findViewById(R.id.switch_ssidHidden);
-        //mSpinnerTaskCount = (Spinner) findViewById(R.id.spinnerTaskResultCount);
-
     }
 
     /**
@@ -355,23 +357,6 @@ public class ConnectionActivity extends AppCompatActivity {
 
     }
 
-//    private void initSpinner()
-//    {
-//
-//        int[] spinnerItemsInt = getResources().getIntArray(R.array.taskResultCount);
-//        int length = spinnerItemsInt.length;
-//        Integer[] spinnerItemsInteger = new Integer[length];
-//        for(int i=0;i<length;i++)
-//        {
-//            spinnerItemsInteger[i] = spinnerItemsInt[i];
-//        }
-//        ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(this,
-//                android.R.layout.simple_list_item_1, spinnerItemsInteger);
-//        mSpinnerTaskCount.setAdapter(adapter);
-//        mSpinnerTaskCount.setSelection(1);
-//    }
-
-
 
     private void onEsptoucResultAddedPerform(final IEsptouchResult result) {
 
@@ -379,17 +364,8 @@ public class ConnectionActivity extends AppCompatActivity {
 
         subscribeMqttTopic("/device/" + deviceMac);
 
-//        runOnUiThread(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//                String text = deviceMac + " ist verbunden";
-//                Toast.makeText(MainActivity.this, text, Toast.LENGTH_LONG).show();
-//            }
-//
-//        });
-
     }
+
 
     private IEsptouchListener myListener = new IEsptouchListener() {
 
@@ -400,11 +376,7 @@ public class ConnectionActivity extends AppCompatActivity {
     };
 
 
-
-
     private class EsptouchAsyncTask3 extends AsyncTask<String, Void, List<IEsptouchResult>> {
-
-        private ProgressDialog mProgressDialog;
 
         //private IEsptouchTask mEsptouchTask;
         // without the lock, if the user tap confirm and cancel quickly enough,
@@ -417,10 +389,7 @@ public class ConnectionActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            mProgressDialog = new ProgressDialog(ConnectionActivity.this);
-            mProgressDialog.setMessage("Verbindung wird hergestellt...");
-            mProgressDialog.setCanceledOnTouchOutside(false);
-            mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
                 @Override
                 public void onCancel(DialogInterface dialog) {
                     synchronized (mLock) {
@@ -434,16 +403,7 @@ public class ConnectionActivity extends AppCompatActivity {
                 }
             });
 
-//            String buttonMessage = getResources().getString(R.string.msgPleaseWait);
-//            mProgressDialog.setButton(DialogInterface.BUTTON_POSITIVE, buttonMessage, new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//
-//                }
-//            });
-
-            mProgressDialog.show();
-//            mProgressDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
+            progressDialog.show();
         }
 
         @Override
@@ -470,9 +430,6 @@ public class ConnectionActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<IEsptouchResult> result) {
 
-//            mProgressDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
-//            mProgressDialog.getButton(DialogInterface.BUTTON_POSITIVE).setText("Ok");
-
             IEsptouchResult firstResult = result.get(0);
             // check whether the task is cancelled and no results received
             if (!firstResult.isCancelled()) {
@@ -483,68 +440,17 @@ public class ConnectionActivity extends AppCompatActivity {
                 // the task received some results including cancelled while
                 // executing before receiving enough results
                 if (firstResult.isSuc()) {
-                    StringBuilder sb = new StringBuilder();
-                    for (IEsptouchResult resultInList : result) {
-                        sb.append("IoT-Gerät " + resultInList.getBssid() + " wurde erfolgreich verbunden");
 
-                        count++;
-                        if (count >= maxDisplayCount) {
-                            break;
-                        }
-                    }
-
-                    if (count < result.size()) {
-                        sb.append("\nthere's " + (result.size() - count)
-                                + " more result(s) without showing\n");
-                    }
-
-                    //mProgressDialog.setMessage(sb.toString());
+                    // success is handled by mqtt-callback CONNECTED
 
                 } else {
-                    ///mProgressDialog.setMessage(getResources().getString(R.string.msgCanNotConnect));
-                    mProgressDialog.cancel();
-                    showErrorDialog();
+                    progressDialog.cancel();
+                    String message = getResources().getString(R.string.msgCanNotConnect);
+                    Dialogs.showMessageDialog(message, ConnectionActivity.this);
                 }
             }
         }
     }
 
-    /**
-     * Show dialog with error-message
-     */
-    private void showErrorDialog(){
-
-        AlertDialog dialog = new AlertDialog.Builder(ConnectionActivity.this).create();
-        dialog.setMessage(getResources().getString(R.string.msgCanNotConnect));
-        //dialog.setCancelable(false);
-
-        dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Ok", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-
-        dialog.show();
-        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimary));
-    }
-
-
-    public void test(View view){
-
-        MySpinner.show(this);
-        deviceMac = "18fe34a37794";
-        subscribeMqttTopic("/device/" + deviceMac);
-
-        String topic = "secureIoT/device/" + "18fe34a37794";
-        String payload = "CONNECTED";
-        byte[] encodedPayload = new byte[0];
-        try {
-            encodedPayload = payload.getBytes("UTF-8");
-            MqttMessage message = new MqttMessage(encodedPayload);
-            mqttClient.publish(topic, message);
-        } catch (UnsupportedEncodingException | MqttException e) {
-            e.printStackTrace();
-        }
-    }
 
 }

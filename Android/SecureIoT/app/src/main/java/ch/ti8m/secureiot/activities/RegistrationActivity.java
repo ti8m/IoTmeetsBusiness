@@ -1,7 +1,9 @@
 package ch.ti8m.secureiot.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -22,7 +24,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import java.io.UnsupportedEncodingException;
 
 import ch.ti8m.secureiot.R;
-import ch.ti8m.secureiot.util.MySpinner;
+import ch.ti8m.secureiot.util.Dialogs;
 
 public class RegistrationActivity extends AppCompatActivity {
 
@@ -36,6 +38,8 @@ public class RegistrationActivity extends AppCompatActivity {
     private String ssid;
 
     private MqttAndroidClient mqttClient;
+    private ProgressDialog progressDialog;
+    private CountDownTimer timeoutTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,10 +62,17 @@ public class RegistrationActivity extends AppCompatActivity {
         linkGuiElements();
         initMqtt();
 
-        txt_deviceid.setText(deviceMac);
         txt_ssid.setText(ssid);
+        txt_deviceid.setText(deviceMac);
+        progressDialog = Dialogs.getProgressDialog("Anfrage wird geprüft...", this);
+
+    }
 
 
+    @Override
+    public void onBackPressed(){
+
+        Dialogs.showCancelDialog(deviceMac, this, mqttClient);
     }
 
     /**
@@ -157,7 +168,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private void handleMessage(MqttMessage m){
 
         String message = m.toString();
-        Log.d(LOG_TAG, "mqtt-message received: " + message );
+        Log.d(LOG_TAG, "mqtt-message received: " + message);
 
         switch (message){
 
@@ -170,7 +181,8 @@ public class RegistrationActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(IMqttToken asyncActionToken) {
                             // we are now successfully disconnected
-                            MySpinner.hide();
+                            progressDialog.cancel();
+                            timeoutTimer.cancel();
 
                             // Go to validation-activity
                             Intent intent = new Intent(RegistrationActivity.this, ValidationActivity.class);
@@ -183,13 +195,19 @@ public class RegistrationActivity extends AppCompatActivity {
                         public void onFailure(IMqttToken asyncActionToken,
                                               Throwable exception) {
                             // something went wrong, but probably we are disconnected anyway
-                            MySpinner.hide();
+                            progressDialog.cancel();
                         }
                     });
                 } catch (MqttException e) {
                     e.printStackTrace();
                 }
 
+                break;
+            }
+            case "AUTH_FAILED":{
+                progressDialog.cancel();
+                timeoutTimer.cancel();
+                Dialogs.showMessageDialog("Anfrage ist ungültig", this);
                 break;
             }
             case "LOST_CONNECTION":{
@@ -222,8 +240,9 @@ public class RegistrationActivity extends AppCompatActivity {
      */
     public void register(View view) {
 
-        MySpinner.show(this);
+        progressDialog.show();
         publishMessage("AUTH_REQUEST");
+        startTimeOut(15                                                                                                                                                                                                                                                                                                                                                                                                                                                                        );
     }
 
 
@@ -245,8 +264,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(IMqttToken asyncActionToken,
-                                      Throwable exception) {
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                     // something went wrong, but probably we are disconnected anyway
                 }
             });
@@ -254,6 +272,25 @@ public class RegistrationActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+
+    /**
+     * Start the timeout countdown
+     */
+    private void startTimeOut(int seconds){
+
+        timeoutTimer = new CountDownTimer(seconds* 1000 + 1000, 1000) {
+
+            public void onTick(long millisUntilFinished) {}
+
+            public void onFinish() {
+                progressDialog.cancel();
+                Dialogs.showMessageDialog("Keine Verbindung zum Server", RegistrationActivity.this);
+            }
+        }.start();
+    }
+
+
 
     /**
      * Linking all gui-elements

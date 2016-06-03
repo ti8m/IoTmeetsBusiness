@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Das IoT-Gerät wird mit dem Netzwerk verbunden, mit welchem das Telefon aktuell verbunden ist"
+                android:text="Das Gerät wird mit dem Netzwerk verbunden, mit welchem das Telefon aktuell verbunden ist"
                 android:id="@+id/txt_instruction1" />
 
             <LinearLayout

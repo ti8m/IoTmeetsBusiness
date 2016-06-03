@@ -1,6 +1,6 @@
 {
   "name": "secure-iot",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Thesis",
   "main": "server.js",
   "author": "S. Schärer",

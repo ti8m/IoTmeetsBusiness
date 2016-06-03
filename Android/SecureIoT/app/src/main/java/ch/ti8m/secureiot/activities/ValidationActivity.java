@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +27,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import java.io.UnsupportedEncodingException;
 
 import ch.ti8m.secureiot.R;
+import ch.ti8m.secureiot.util.Dialogs;
 import ch.ti8m.secureiot.util.WifiHelper;
 
 public class ValidationActivity extends AppCompatActivity {
@@ -36,12 +38,15 @@ public class ValidationActivity extends AppCompatActivity {
     private TextView txt_message;
     private TextView txt_deviceid;
     private TextView txt_countdown;
+    private Button btn_confirm;
+    private Button btn_reject;
 
     private String deviceMac;
     private WifiHelper wifiHelper;
     private MqttAndroidClient mqttClient;
-    private ProgressDialog spinnerDialog;
+    private ProgressDialog progressDialog;
     private CountDownTimer countDownTimer;
+    private CountDownTimer timeoutTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,13 +65,13 @@ public class ValidationActivity extends AppCompatActivity {
         }
 
         linkGuiElements();
-        createSpinnerDialog();
         initMqtt();
 
         // set deviceId
         txt_deviceid.setText(deviceMac);
 
         wifiHelper = new WifiHelper(this);
+        progressDialog = Dialogs.getProgressDialog("Gerät wird registriert...", this);
 
     }
 
@@ -85,6 +90,14 @@ public class ValidationActivity extends AppCompatActivity {
         // start validation startCountdown
         startCountdown(20, txt_countdown);
     }
+
+
+    @Override
+    public void onBackPressed(){
+
+        Dialogs.showCancelDialog(deviceMac, this, mqttClient);
+    }
+
 
     /**
      *  Create and connect mqtt-client
@@ -185,8 +198,17 @@ public class ValidationActivity extends AppCompatActivity {
 
             case  "AUTH_SUCCESS":{
 
-                spinnerDialog.cancel();
+                progressDialog.cancel();
+                timeoutTimer.cancel();
                 showSuccessDialog();
+
+                break;
+            }
+            case  "AUTH_FAILED":{
+
+                progressDialog.cancel();
+                timeoutTimer.cancel();
+                showErrorDialog("Registrierung fehlgeschlagen");
 
                 break;
             }
@@ -222,10 +244,14 @@ public class ValidationActivity extends AppCompatActivity {
     public void authConfirm(View view){
 
         clearCountdown();
+        startTimeOut(20);
         publishCommand("AUTH_CONFIRM");
 
-        spinnerDialog.show();
-        spinnerDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
+        btn_confirm.setEnabled(false);
+        btn_reject.setEnabled(false);
+
+        progressDialog.show();
+        progressDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
     }
 
 
@@ -233,6 +259,13 @@ public class ValidationActivity extends AppCompatActivity {
      * Click-handler for reject-button
      */
     public void authReject(View view){
+        authReject();
+    }
+
+    /**
+     * Reject registration request
+     */
+    public void authReject(){
 
         clearCountdown();
         publishCommand("AUTH_REJECT");
@@ -265,47 +298,6 @@ public class ValidationActivity extends AppCompatActivity {
 
 
     /**
-     * Create Progress-Dialog for registration
-     */
-    private void createSpinnerDialog(){
-
-        spinnerDialog = new ProgressDialog(this);
-        spinnerDialog.setMessage("Gerät wird registriert...");
-        spinnerDialog.setCanceledOnTouchOutside(false);
-
-//        String buttonMessage = getResources().getString(R.string.msgPleaseWait);
-//        spinnerDialog.setButton(DialogInterface.BUTTON_POSITIVE, buttonMessage, new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//
-//                // disconnect mqtt-client and go to main-activity
-//                try {
-//                    IMqttToken disconToken = mqttClient.disconnect();
-//                    disconToken.setActionCallback(new IMqttActionListener() {
-//                        @Override
-//                        public void onSuccess(IMqttToken asyncActionToken) {
-//
-//                            // Go to main-activity
-//                            Intent intent = new Intent(ValidationActivity.this, MainActivity.class);
-//                            startActivity(intent);
-//                        }
-//
-//                        @Override
-//                        public void onFailure(IMqttToken asyncActionToken,
-//                                              Throwable exception) {
-//                            // something went wrong, but probably we are disconnected anyway
-//                        }
-//                    });
-//                } catch (MqttException e) {
-//                    e.printStackTrace();
-//                }
-//
-//            }
-//        });
-    }
-
-
-    /**
      * Show dialog with success-message
      */
     private void showSuccessDialog(){
@@ -328,6 +320,7 @@ public class ValidationActivity extends AppCompatActivity {
 
                             // Go to main-activity
                             Intent intent = new Intent(ValidationActivity.this, MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // clear activity back-stack
                             startActivity(intent);
                         }
 
@@ -379,6 +372,38 @@ public class ValidationActivity extends AppCompatActivity {
         txt_countdown.setText("");
     }
 
+    /**
+     * Start the timeout countdown
+     */
+    private void startTimeOut(int seconds){
+
+        timeoutTimer = new CountDownTimer(seconds* 1000 + 1000, 1000) {
+
+            public void onTick(long millisUntilFinished) {}
+
+            public void onFinish() {
+                progressDialog.cancel();
+                showErrorDialog("Keine Verbindung zum Server");
+            }
+        }.start();
+    }
+
+    public void showErrorDialog(String message) {
+
+        AlertDialog dialog = new AlertDialog.Builder(this).create();
+        dialog.setMessage(message);
+
+        dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+
+                authReject();
+            }
+        });
+
+        dialog.show();
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimary));
+    }
+
 
     /**
      * Linking all gui-elements
@@ -388,6 +413,8 @@ public class ValidationActivity extends AppCompatActivity {
         txt_message = (TextView) findViewById(R.id.txt_instruction1);
         txt_deviceid = (TextView) findViewById(R.id.txt_deviceId);
         txt_countdown = (TextView) findViewById(R.id.txt_countdown);
+        btn_confirm = (Button) findViewById(R.id.btn_confirm);
+        btn_reject = (Button) findViewById(R.id.btn_reject);
     }
 
 }

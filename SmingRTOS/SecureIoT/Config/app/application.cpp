@@ -46,13 +46,16 @@ void onMessageReceived(String topic, String message) {
 	// Messages from mobile-app
 	if (message.equals("AUTH_REQUEST")) {
 
-		authStartRequest();
+		startAuth();
 	}
 
-	if (message.equals("AUTH_REJECT")) {
+	if (message.equals("AUTH_CANCEL")) {
 
+		WifiStation.disconnect();
+		smartconfig_stop();
+		setConfigMode(true);
+	}
 
-		}
 
 	if (message.equals("AUTH_END")) {
 
@@ -60,9 +63,9 @@ void onMessageReceived(String topic, String message) {
 	}
 
 	// Messages from server
-	if (message.equals("START_AUTH")) {
+	if (message.equals("AUTH_ACCEPTED")) {
 
-		startAuth();
+		authSigningRequest();
 	}
 }
 
@@ -112,55 +115,62 @@ void connectFail() {
 void ICACHE_FLASH_ATTR
 smartconfig_callback(sc_status status, void *pdata) {
 	switch (status) {
-	case SC_STATUS_WAIT:
+		case SC_STATUS_WAIT: {
 
-		printf("SC_STATUS_WAIT\n");
-		break;
-
-	case SC_STATUS_FIND_CHANNEL:
-
-		printf("SC_STATUS_FIND_CHANNEL\n");
-		blinkGreenStart(100, -1);
-		break;
-
-	case SC_STATUS_GETTING_SSID_PSWD: {
-		printf("SC_STATUS_GETTING_SSID_PSWD\n");
-		sc_type *type = (sc_type *) pdata;
-		if (*type == SC_TYPE_ESPTOUCH) {
-			printf("SC_TYPE:SC_TYPE_ESPTOUCH\n");
-		} else {
-			printf("SC_TYPE:SC_TYPE_AIRKISS\n");
+			Serial.println("SC_STATUS_WAIT");
+			break;
 		}
-		break;
-	}
-	case SC_STATUS_LINK: {
+		case SC_STATUS_FIND_CHANNEL: {
 
-		debugf("SC_STATUS_LINK\n");
-		struct station_config *sta_conf = (station_config *) pdata;
-		char *ssid = (char*) sta_conf->ssid;
-		char *password = (char*) sta_conf->password;
-		WifiStation.config(ssid, password);
-
-		// If connecting fails, the callback with state LINK_OVER is never called.
-		// So we already try to connect here (if successful, we skip connectOk() and wait for the state LINK_OVER)
-		WifiStation.waitConnection(connectOk, 10, connectFail);
-
-		break;
-	}
-	case SC_STATUS_LINK_OVER:
-		printf("SC_STATUS_LINK_OVER\n");
-
-		if (pdata != NULL) {
-			uint8 phone_ip[4] = { 0 };
-
-			memcpy(phone_ip, (uint8*) pdata, 4);
-			printf("Phone ip: %d.%d.%d.%d\n", phone_ip[0], phone_ip[1], phone_ip[2], phone_ip[3]);
+			Serial.println("SC_STATUS_FIND_CHANNEL");
+			blinkGreenStart(100, -1);
+			break;
 		}
+		case SC_STATUS_GETTING_SSID_PSWD: {
 
-		//setConfigMode(false);
-		smartConfigActive = false;
-		WifiStation.waitConnection(connectOk, 10, connectFail);
-		break;
+			Serial.println("SC_STATUS_GETTING_SSID_PSWD");
+			sc_type *type = (sc_type *) pdata;
+
+			if (*type == SC_TYPE_ESPTOUCH) {
+
+				Serial.println("SC_TYPE: SC_TYPE_ESPTOUCH");
+
+			} else {
+
+				Serial.println("SC_TYPE: SC_TYPE_AIRKISS");
+			}
+
+			break;
+		}
+		case SC_STATUS_LINK: {
+
+			Serial.println("SC_STATUS_LINK");
+			struct station_config *sta_conf = (station_config *) pdata;
+			char *ssid = (char*) sta_conf->ssid;
+			char *password = (char*) sta_conf->password;
+			WifiStation.config(ssid, password);
+
+			// If connecting fails, the callback with state LINK_OVER is never called.
+			// So we already try to connect here (if successful, we skip connectOk() and wait for the state LINK_OVER)
+			WifiStation.waitConnection(connectOk, 10, connectFail);
+
+			break;
+		}
+		case SC_STATUS_LINK_OVER: {
+			Serial.println("SC_STATUS_LINK_OVER");
+
+			if (pdata != NULL) {
+				uint8 phone_ip[4] = { 0 };
+
+				memcpy(phone_ip, (uint8*) pdata, 4);
+				Serial.printf("Phone ip: %d.%d.%d.%d\n", phone_ip[0], phone_ip[1], phone_ip[2], phone_ip[3]);
+			}
+
+			//setConfigMode(false);
+			smartConfigActive = false;
+			WifiStation.waitConnection(connectOk, 10, connectFail);
+			break;
+		}
 	}
 
 }
@@ -174,6 +184,8 @@ smartconfig_task(void *pvParameters) {
 
 	vTaskDelete(NULL);
 }
+
+
 
 void setConfigMode(bool on) {
 	if (on) {
@@ -237,45 +249,11 @@ void debounceReset() {
 
 
 
-// for test
-void serialCallBack(Stream& stream, char arrivedChar, unsigned short availableCharsCount) {
-
-	if (arrivedChar == 's') {
-
-		// Reboot in operation mode
-		rboot_set_current_rom(0);
-		Serial.println("Restarting...");
-		System.restart();
-
-	}
-
-}
-
-
-
-// for testing
-void init2() {
+void init() {
 
 	Serial.begin(SERIAL_BAUD_RATE); // 115200 by default
 	Serial.systemDebugOutput(true); // Allow debug output to serial
 
-	configMode = false;
-
-	WifiStation.config("MeBu-Mobil", "0987qWerty");
-	WifiStation.enable(true);
-	WifiAccessPoint.enable(false);
-
-	//WifiStation.waitConnection(test);
-	WifiStation.waitConnection(connectOk, 10, connectFail);
-}
-
-void init() {
-
-	Serial.begin(SERIAL_BAUD_RATE); // 115200 by default
-	Serial.systemDebugOutput(true); // Debug output to serial
-	//commandHandler.registerSystemCommands();
-
-	// Enable rboot in makefile!
 	int slot = rboot_get_current_rom();
 	Serial.printf("\r\nCurrently running rom %d.\r\n", slot);
 
@@ -291,6 +269,8 @@ void init() {
 	pinMode(GREEN_LED_PIN, OUTPUT);
 	pinMode(RED_LED_PIN, OUTPUT);
 	pinMode(SWITCH_PIN, INPUT);
+
+
 
 	WifiStation.enable(true);
 	WifiStation.enableDHCP(true);

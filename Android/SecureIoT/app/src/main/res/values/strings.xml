@@ -38,7 +38,7 @@
     <string name="title_activity_connect_wlan">Sensor verbinden</string>
     <string name="connect">Verbinden</string>
     <string name="ssid">SSID</string>
-    <string name="instTurnSensorOn">Sensor einschalten und Konfig-Taste gedrückt halten</string>
+    <string name="instTurnSensorOn">Gerät einschalten und Konfig-Taste gedrückt halten</string>
     <string name="instBlinkLed">Sobald die grüne LED blinkt, Konfig-Taste loslassen</string>
     <string name="instConnectToSensor">Smartphone mit den WLAN <b><i>iot-meets-business</i></b> verbinden</string>
     <string name="instSetPassword">Passwort des Netzwerks eingeben, mit welchem das IoT-Gerät verbunden werden soll</string>
@@ -54,9 +54,9 @@
     <string name="msgCanNotConnect">Verbindung konnte nicht hergestellt werden</string>
     <string name="title_activity_connect_sensor2">ConnectSensor2Activity</string>
     <string name="title_activity_main">Secure IoT</string>
-    <string name="title_activity_validation">Verifizieren</string>
-    <string name="title_activity_register">Registrieren</string>
-    <string name="title_activity_connection">Verbinden</string>
+    <string name="title_activity_validation">Validierung</string>
+    <string name="title_activity_register">Registrierung</string>
+    <string name="title_activity_connection">WLAN-Verbindung</string>
 
 
 </resources>

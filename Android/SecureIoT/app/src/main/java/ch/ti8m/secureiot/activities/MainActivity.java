@@ -21,9 +21,8 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         linkGuiElements();
-
-
     }
+
 
     /**
      * Click-handler for register-button

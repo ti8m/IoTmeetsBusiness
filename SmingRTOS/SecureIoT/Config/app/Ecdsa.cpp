@@ -66,11 +66,11 @@ void ecc_prepare_task(void *pvParameters) {
 		data[i] = macArr[i - 48];
 	}
 
-	// hash public-key & msg (data)
+	// hash public-key & mac (data)
 	sha1(dataHash, data, 60);
 
-	// sign the hashed data with the root private-key
-	if (!uECC_sign(rootPrivate, dataHash, sizeof(dataHash), sig, curve)) {
+	// sign the hashed data with the device private-key
+	if (!uECC_sign(devicePrivate, dataHash, sizeof(dataHash), sig, curve)) {
 		Serial.println("Signing failed");
 	}
 
@@ -86,13 +86,6 @@ void ecc_prepare_task(void *pvParameters) {
 	for (int i = 0; i < publicLength; i++) {
 
 		Serial.printf("%02x ", sig[i]);
-	}
-
-	printf("\n");
-
-	// verify signature with public root-key ToDo: Remove (just for test)
-	if (uECC_verify(rootPublic, dataHash, sizeof(dataHash), sig, curve)) {
-		Serial.println("Signature is valid");
 	}
 
 	Serial.println("MAC: " + mac);
@@ -129,26 +122,30 @@ void authChallengeResponse(HttpClient& client, bool successful) {
 
 	int statusCode = client.getResponseCode();
 
-	if (successful) {
+	Serial.println("Server response: " + statusCode);
+
+	if(statusCode == 503){
+		Serial.println("Server not running");
+		return;
+	}
+
+	String json = client.getResponseString();
+
+	DynamicJsonBuffer jsonBuffer;
+	JsonObject& root = jsonBuffer.parseObject(json);
+
+	bool success = root["success"];
+	String message = root["message"];
+	String token = root["token"];
+
+	Serial.println("Server response:");
+	Serial.println("status: " + statusCode);
+	Serial.println("message: " + message);
+	Serial.println("token: " + token);
+
+	if(success){
 
 		mqttPublish("AUTH_SUCCESS");
-
-		Serial.println("Server response: " + statusCode);
-
-		String json = client.getResponseString();
-
-		DynamicJsonBuffer jsonBuffer;
-		JsonObject& root = jsonBuffer.parseObject(json);
-
-		bool success = root["success"];
-		String message = root["message"];
-		String token = root["token"];
-
-		Serial.println("Server response:");
-		Serial.println("success: " + success);
-		Serial.println("message: " + message);
-		Serial.println("token: " + token);
-
 		saveAuthToken(token);
 
 		blinkStop();
@@ -156,6 +153,7 @@ void authChallengeResponse(HttpClient& client, bool successful) {
 
 	} else {
 
+		mqttPublish("AUTH_FAILED");
 		Serial.println("Auth-Challenge-Request failed");
 	}
 
@@ -210,29 +208,27 @@ void authKeyResponse(HttpClient& client, bool successful) {
 
 	int statusCode = client.getResponseCode();
 
-	if (successful) {
+	Serial.println("Server response: " + statusCode);
 
-		Serial.println("Server response: " + statusCode);
+	if(statusCode == 503){
+		Serial.println("Server not running");
+		return;
+	}
 
-		String json = client.getResponseString();
+	String json = client.getResponseString();
 
-		DynamicJsonBuffer jsonBuffer;
-		JsonObject& root = jsonBuffer.parseObject(json);
+	DynamicJsonBuffer jsonBuffer;
+	JsonObject& root = jsonBuffer.parseObject(json);
 
-		bool success = root["success"];
-		String message = root["message"];
-		String challenge = root["challenge"];
+	bool success = root["success"];
+	String message = root["message"];
 
-		Serial.println("Server response:");
-		Serial.println("success: " + success);
-		Serial.println("message: " + message);
-		Serial.println("challenge: " + challenge);
+	Serial.println("Server response:");
+	Serial.println("status: " + statusCode);
+	Serial.println("message: " + message);
 
-		// Sign the challenge and send it back to the server
-		authChallengeRequest(challenge);
-
-	} else {
-
+	if(!success) {
+		mqttPublish("AUTH_FAILED");
 		Serial.println("Auth-Key-Request failed");
 	}
 
@@ -278,33 +274,66 @@ void authKeyRequest() {
 }
 
 
-void authStartResponse(HttpClient& client, bool successful) {
+void authSigningResponse(HttpClient& client, bool successful) {
 
 	int statusCode = client.getResponseCode();
 
-		if (successful) {
+	Serial.println("Server response: " + statusCode);
 
-			Serial.println("Server response: " + statusCode);
+	if(statusCode == 503){
+		Serial.println("Server not running");
+		return;
+	}
 
-			String json = client.getResponseString();
+	String json = client.getResponseString();
 
-			DynamicJsonBuffer jsonBuffer;
-			JsonObject& root = jsonBuffer.parseObject(json);
+	DynamicJsonBuffer jsonBuffer;
+	JsonObject& root = jsonBuffer.parseObject(json);
 
-			bool success = root["success"];
-			String message = root["message"];
+	bool success = root["success"];
+	String message = root["message"];
+	String challenge = root["challenge"];
 
-			Serial.println("Server response:");
-			Serial.println("message: " + message);
+	Serial.println("Server response:");
+	Serial.println("status: " + statusCode);
+	Serial.println("message: " + message);
+	Serial.println("challenge: " + challenge);
+	Serial.print("Signature: ");
 
-		} else {
+	if(!success){
+		mqttPublish("AUTH_FAILED");
+		Serial.println("Auth-Signing-Request failed");
+		return;
+	}
 
-			Serial.println("Auth-Start-Request failed");
-		}
+	// create signature array
+	uint8_t signature[48] = {0};
+	for (int i = 0; i < sizeof(signature); i++) {
+
+		signature[i] = root["signature"][i];
+		Serial.printf("%d ", signature[i]);
+	}
+
+	Serial.println("");
+
+
+	// Verify signature with root public-key and data-hash of device-id and device public-key
+	if (uECC_verify(rootPublic, dataHash, sizeof(dataHash), signature, curve)) {
+
+		Serial.println("Signature is valid");
+
+		// Sign the challenge and send it back to the server
+		authChallengeRequest(challenge);
+
+	} else {
+		Serial.println("Invalid signature");
+		mqttPublish("AUTH_FAILED");
+	}
 
 }
 
-void authStartRequest() {
+
+void authSigningRequest() {
 
 	String mac = WifiStation.getMAC();
 
@@ -317,6 +346,6 @@ void authStartRequest() {
 	startReq.setPostBody(body);
 
 	startReq.setRequestContentType("application/json");
-	startReq.downloadString("http://secure-iot-samschaerer.c9users.io/auth/start", authStartResponse);
+	startReq.downloadString("http://secure-iot-samschaerer.c9users.io/auth/sign", authSigningResponse);
 }
 

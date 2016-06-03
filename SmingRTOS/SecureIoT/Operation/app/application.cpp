@@ -142,21 +142,6 @@ void sendData() {
 }
 
 
-
-// for test
-void serialCallBack(Stream& stream, char arrivedChar, unsigned short availableCharsCount) {
-
-	if (arrivedChar == 's') {
-
-		// Reboot in operation mode
-		rboot_set_current_rom(0);
-		Serial.println("Restarting...");
-		System.restart();
-
-	}
-}
-
-
 /**
  *  Get current auth-token from rboot-config (defined in rboot.h)
  */
@@ -214,8 +199,5 @@ void init() {
 
 		WifiStation.waitConnection(connectOk, 5, connectFail);
 	}
-
-	// for test
-	Serial.setCallback(serialCallBack);
 
 }
