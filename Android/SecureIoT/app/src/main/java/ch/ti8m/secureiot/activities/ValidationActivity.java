@@ -71,7 +71,7 @@ public class ValidationActivity extends AppCompatActivity {
         txt_deviceid.setText(deviceMac);
 
         wifiHelper = new WifiHelper(this);
-        progressDialog = Dialogs.getProgressDialog("Gerät wird registriert...", this);
+        progressDialog = Dialogs.getProgressDialog(getString(R.string.msgRegisterDevice), this);
 
     }
 
@@ -135,6 +135,7 @@ public class ValidationActivity extends AppCompatActivity {
         }
     }
 
+
     /**
      *  Subscribe for messages from a specific topic
      */
@@ -186,6 +187,7 @@ public class ValidationActivity extends AppCompatActivity {
 
     }
 
+
     /**
      *  Handle incoming mqtt-messages
      */
@@ -208,7 +210,7 @@ public class ValidationActivity extends AppCompatActivity {
 
                 progressDialog.cancel();
                 timeoutTimer.cancel();
-                showErrorDialog("Registrierung fehlgeschlagen");
+                showErrorDialog(getString(R.string.msgRegistrationFailed));
 
                 break;
             }
@@ -218,6 +220,7 @@ public class ValidationActivity extends AppCompatActivity {
             }
         }
     }
+
 
     /**
      *  Publish mqtt-message
@@ -262,6 +265,7 @@ public class ValidationActivity extends AppCompatActivity {
         authReject();
     }
 
+
     /**
      * Reject registration request
      */
@@ -302,7 +306,7 @@ public class ValidationActivity extends AppCompatActivity {
      */
     private void showSuccessDialog(){
 
-        String successMsg = "Das Gerät wurde erfolgreich registriert";
+        String successMsg = getString(R.string.msgDeviceRegistered);
         AlertDialog dialog = new AlertDialog.Builder(ValidationActivity.this).create();
         dialog.setMessage(successMsg);
         dialog.setCancelable(false);
@@ -358,11 +362,12 @@ public class ValidationActivity extends AppCompatActivity {
 
             public void onFinish() {
                 tv.setText("0");
-                Toast.makeText(getApplicationContext(), "Zeit abgelaufen", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), R.string.msgTimeExpired, Toast.LENGTH_LONG).show();
                 authReject(tv);
             }
         }.start();
     }
+
 
     /**
      * Cancel the validation countdown
@@ -371,6 +376,7 @@ public class ValidationActivity extends AppCompatActivity {
         countDownTimer.cancel();
         txt_countdown.setText("");
     }
+
 
     /**
      * Start the timeout countdown
@@ -383,7 +389,7 @@ public class ValidationActivity extends AppCompatActivity {
 
             public void onFinish() {
                 progressDialog.cancel();
-                showErrorDialog("Keine Verbindung zum Server");
+                showErrorDialog(getString(R.string.msgNoConnection));
             }
         }.start();
     }

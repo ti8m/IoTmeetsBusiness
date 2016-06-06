@@ -30,12 +30,19 @@ uint8_t sig[48]; // 2x curve-size
 // curve secp192r1
 const struct uECC_Curve_t * curve = uECC_secp192r1();
 
-// Random number generator for lib micro-ecc
+
+/**
+ *  Random number generator for lib micro-ecc
+ */
 static int OS_RNG(uint8_t *dest, unsigned size) {
 	os_get_random(dest, size);
 	return 1;
 }
 
+
+/**
+ *  Task creating keys and signature
+ */
 void ecc_prepare_task(void *pvParameters) {
 
 	String mac = WifiStation.getMAC();
@@ -96,6 +103,9 @@ void ecc_prepare_task(void *pvParameters) {
 }
 
 
+/**
+ *  Save token to flash (defined in rboot.h)
+ */
 void saveAuthToken(String token){
 
 	rboot_config bootconf;
@@ -109,6 +119,10 @@ void saveAuthToken(String token){
 
 }
 
+
+/**
+ *  Start authentication process
+ */
 void startAuth(){
 
 	blinkGreenStart(100, -1);
@@ -118,6 +132,10 @@ void startAuth(){
 }
 
 
+
+/**
+ *  HTTP response from challenge request
+ */
 void authChallengeResponse(HttpClient& client, bool successful) {
 
 	int statusCode = client.getResponseCode();
@@ -159,6 +177,10 @@ void authChallengeResponse(HttpClient& client, bool successful) {
 
 }
 
+
+/**
+ *  Send the signed challenge to the server
+ */
 void authChallengeRequest(String challenge) {
 
 	String mac = WifiStation.getMAC();
@@ -203,7 +225,9 @@ void authChallengeRequest(String challenge) {
 }
 
 
-
+/**
+ *  HTTP response from key request
+ */
 void authKeyResponse(HttpClient& client, bool successful) {
 
 	int statusCode = client.getResponseCode();
@@ -234,6 +258,10 @@ void authKeyResponse(HttpClient& client, bool successful) {
 
 }
 
+
+/**
+ *  Send signed public-key and device-id to server
+ */
 void authKeyRequest() {
 
 	String mac = WifiStation.getMAC();
@@ -274,6 +302,9 @@ void authKeyRequest() {
 }
 
 
+/**
+ *  HTTP response from signing request
+ */
 void authSigningResponse(HttpClient& client, bool successful) {
 
 	int statusCode = client.getResponseCode();
@@ -333,6 +364,9 @@ void authSigningResponse(HttpClient& client, bool successful) {
 }
 
 
+/**
+ *  Request the signed device public-key by the server
+ */
 void authSigningRequest() {
 
 	String mac = WifiStation.getMAC();

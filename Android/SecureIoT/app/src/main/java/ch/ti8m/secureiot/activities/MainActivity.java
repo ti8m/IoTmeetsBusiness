@@ -19,8 +19,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        linkGuiElements();
     }
 
 
@@ -34,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+
     /**
      * Click-handler for exit-button
      */
@@ -42,17 +41,5 @@ public class MainActivity extends AppCompatActivity {
         // exit app
         System.exit(0);
     }
-
-
-    /**
-     * Linking all gui-elements
-     */
-    private void linkGuiElements() {
-
-
-    }
-
-
-
 
 }

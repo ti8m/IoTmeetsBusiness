@@ -42,6 +42,7 @@ void publishMessage() {
 	mqtt.publish("secureIoT/device/" + mac, mqttMessage); // or publishWithQoS
 }
 
+
 /**
  *  Check for MQTT Disconnection
  */
@@ -56,6 +57,7 @@ void checkMQTTDisconnect(TcpClient& client, bool flag) {
 	// Restart connection attempt after 2 seconds
 	procTimer.initializeMs(2000, startMqttClient).startOnce();
 }
+
 
 /**
  *  Run MQTT client

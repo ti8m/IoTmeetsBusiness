@@ -64,7 +64,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
         txt_ssid.setText(ssid);
         txt_deviceid.setText(deviceMac);
-        progressDialog = Dialogs.getProgressDialog("Anfrage wird geprüft...", this);
+        progressDialog = Dialogs.getProgressDialog(getString(R.string.msgCheckRequest), this);
 
     }
 
@@ -110,6 +110,7 @@ public class RegistrationActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
 
     /**
      *  Subscribe for messages from a specific topic
@@ -162,6 +163,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     }
 
+
     /**
      *  Handle incoming mqtt-messages
      */
@@ -207,7 +209,7 @@ public class RegistrationActivity extends AppCompatActivity {
             case "AUTH_FAILED":{
                 progressDialog.cancel();
                 timeoutTimer.cancel();
-                Dialogs.showMessageDialog("Anfrage ist ungültig", this);
+                Dialogs.showMessageDialog(getString(R.string.msgInvalidRequest), this);
                 break;
             }
             case "LOST_CONNECTION":{
@@ -216,6 +218,7 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         }
     }
+
 
     /**
      *  Publish mqtt-message
@@ -234,6 +237,7 @@ public class RegistrationActivity extends AppCompatActivity {
         }
 
     }
+
 
     /**
      * Click-handler for register-button
@@ -285,11 +289,10 @@ public class RegistrationActivity extends AppCompatActivity {
 
             public void onFinish() {
                 progressDialog.cancel();
-                Dialogs.showMessageDialog("Keine Verbindung zum Server", RegistrationActivity.this);
+                Dialogs.showMessageDialog(getString(R.string.msgNoConnection), RegistrationActivity.this);
             }
         }.start();
     }
-
 
 
     /**

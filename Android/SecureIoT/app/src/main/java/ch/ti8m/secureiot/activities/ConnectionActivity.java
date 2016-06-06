@@ -76,8 +76,7 @@ public class ConnectionActivity extends AppCompatActivity {
         txt_ssid.setFocusable(false);
         initMqtt();
 
-        edit_wlan_password.setText("0987qWerty");
-        progressDialog = Dialogs.getProgressDialog("Verbindung wird hergestellt...", ConnectionActivity.this);
+        progressDialog = Dialogs.getProgressDialog(getString(R.string.msgMakeConnection), ConnectionActivity.this);
 
     }
 
@@ -152,7 +151,7 @@ public class ConnectionActivity extends AppCompatActivity {
             isSsidHiddenStr = "YES";
         }
 
-        new EsptouchAsyncTask3().execute(apSsid, apBssid, apPassword, isSsidHiddenStr, taskResultCountStr);
+        new EsptouchAsyncTask().execute(apSsid, apBssid, apPassword, isSsidHiddenStr, taskResultCountStr);
     }
 
     /**
@@ -190,6 +189,7 @@ public class ConnectionActivity extends AppCompatActivity {
 
     }
 
+
     /**
      * Linking all gui-elements
      */
@@ -198,6 +198,7 @@ public class ConnectionActivity extends AppCompatActivity {
         txt_ssid = (TextView) findViewById(R.id.txt_ssid);
         edit_wlan_password = (EditText) findViewById(R.id.edit_wlan_password);
     }
+
 
     /**
      *  Create and connect mqtt-client
@@ -232,6 +233,7 @@ public class ConnectionActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
 
     /**
      *  Subscribe for messages from a specific topic
@@ -283,6 +285,7 @@ public class ConnectionActivity extends AppCompatActivity {
         }
 
     }
+
 
     /**
      *  Handle incoming mqtt-messages
@@ -339,6 +342,7 @@ public class ConnectionActivity extends AppCompatActivity {
         }
     }
 
+
     /**
      *  Publish mqtt-message
      */
@@ -357,7 +361,9 @@ public class ConnectionActivity extends AppCompatActivity {
 
     }
 
-
+    /**
+     *  Get results form esp-touch smart-config
+     */
     private void onEsptoucResultAddedPerform(final IEsptouchResult result) {
 
         deviceMac = result.getBssid();
@@ -367,6 +373,9 @@ public class ConnectionActivity extends AppCompatActivity {
     }
 
 
+    /**
+     *  Listener for esp-touch smart-config results
+     */
     private IEsptouchListener myListener = new IEsptouchListener() {
 
         @Override
@@ -376,7 +385,10 @@ public class ConnectionActivity extends AppCompatActivity {
     };
 
 
-    private class EsptouchAsyncTask3 extends AsyncTask<String, Void, List<IEsptouchResult>> {
+    /**
+     *  AsyncTask for esp-touch smart-config process
+     */
+    private class EsptouchAsyncTask extends AsyncTask<String, Void, List<IEsptouchResult>> {
 
         //private IEsptouchTask mEsptouchTask;
         // without the lock, if the user tap confirm and cancel quickly enough,

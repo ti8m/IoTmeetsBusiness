@@ -34,6 +34,9 @@ bool successSent;
 String authToken;
 
 
+/**
+ *  Set deep-sleep mode for 30s
+ */
 void sleeping() {
 	System.deepSleep(30000);
 }

@@ -57,6 +57,14 @@
     <string name="title_activity_validation">Validierung</string>
     <string name="title_activity_register">Registrierung</string>
     <string name="title_activity_connection">WLAN-Verbindung</string>
+    <string name="msgMakeConnection">Verbindung wird hergestellt...</string>
+    <string name="msgCheckRequest">Anfrage wird geprüft...</string>
+    <string name="msgInvalidRequest">Anfrage ist ungültig</string>
+    <string name="msgNoConnection">Keine Verbindung zum Server</string>
+    <string name="msgRegisterDevice">Gerät wird registriert...</string>
+    <string name="msgDeviceRegistered">Das Gerät wurde erfolgreich registriert</string>
+    <string name="msgTimeExpired">Zeit abgelaufen</string>
+    <string name="msgCancelRegistration">Registrierung abbrechen?</string>
 
 
 </resources>

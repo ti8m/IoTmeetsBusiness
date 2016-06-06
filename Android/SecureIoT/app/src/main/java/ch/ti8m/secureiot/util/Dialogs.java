@@ -43,7 +43,7 @@ public class Dialogs {
     public static void showCancelDialog(final String deviceMac, final Context context, final MqttAndroidClient mqttClient) {
 
         AlertDialog dialog = new AlertDialog.Builder(context).create();
-        dialog.setMessage("Registrierung abbrechen?");
+        dialog.setMessage(context.getString(R.string.msgCancelRegistration));
         dialog.setCancelable(false);
 
         dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Ja", new DialogInterface.OnClickListener() {
