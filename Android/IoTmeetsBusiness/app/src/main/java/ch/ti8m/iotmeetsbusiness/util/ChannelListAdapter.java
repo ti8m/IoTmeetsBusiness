@@ -65,7 +65,7 @@ public class ChannelListAdapter extends ArrayAdapter<DataChannel> {
         String location = channel.getLocation();
 
         if(location != null && !location.equals("")){
-            holder.location.setText(location + ", ");
+            holder.location.setText(location);
         }
         else {
             holder.location.setText(location + "");

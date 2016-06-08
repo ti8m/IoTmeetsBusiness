@@ -64,11 +64,6 @@ public class ConnectSensorActivity extends AppCompatActivity {
         linkGuiElements();
 
         wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
-
-        // ToDo: Remove
-        edit_ssid.setText("MeBu-Mobil");
-        edit_wlan_password.setText("0987qWerty");
-
     }
 
 

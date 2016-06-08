@@ -5,6 +5,7 @@
     <item
         android:id="@+id/action_addSensor"
         android:orderInCategory="100"
+        android:icon= "@mipmap/ic_action_plus_48"
         android:title="@string/addSensor"
-        app:showAsAction="never" />
+        app:showAsAction="always" />
 </menu>
