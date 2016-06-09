@@ -5,7 +5,7 @@ android {
     buildToolsVersion "22.0.1"
 
     defaultConfig {
-        applicationId "ch.ti8m.iotmeetsbusiness"
+        applicationId "ch.ti8m.secureiot"
         minSdkVersion 16
         targetSdkVersion 22
         versionCode 1
