@@ -36,7 +36,7 @@
     <string name="ssid">SSID</string>
     <string name="instTurnSensorOn">Sensor einschalten und Konfig-Taste gedrückt halten</string>
     <string name="instBlinkLed">Sobald die grüne LED blinkt, Konfig-Taste loslassen</string>
-    <string name="instConnectToSensor">Smartphone mit den WLAN <b><i>iot-meets-business</i></b> verbinden</string>
+    <string name="instConnectToSensor">Telefon mit den WLAN <b><i>iot-meets-business</i></b> verbinden</string>
     <string name="instSetSsid">SSID und Passwort des Netzerks eingeben, mit welchem der Sensor verbunden werden soll</string>
     <string name="instPressConnect">Button <i>Verbinden</i> drücken</string>
     <string name="title_activity_connect_phone">Telefon verbinden</string>
